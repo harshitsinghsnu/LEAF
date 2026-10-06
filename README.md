@@ -20,10 +20,10 @@ dominant failure mode is duplication: 79.1% of acquisition-selected
 queries from the smallest model repeat previously evaluated candidates,
 and removing duplicates narrows but does not reverse the deficit while
 increasing proposal cost. Larger models reduce duplication without
-achieving superiority or statistical equivalence. Six further checks —
+achieving superiority or statistical equivalence. Six further checks -
 a zero-shot leakage probe, rank-only and chain-of-thought prompts, a
 score-shuffle perturbation, an evidence-conflict probe, and a native
-reasoning-mode proposer — show that models measurably engage with
+reasoning-mode proposer - show that models measurably engage with
 injected potency information without this engagement translating into
 better search outcomes. These results identify duplicate-driven query
 waste, not model scale or prompt design, as the binding constraint on
