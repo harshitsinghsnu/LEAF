@@ -1,0 +1,23 @@
+# Stricter de-duplication control (external review item #3): excludes
+# exact matches against EVERY previously-queried candidate this run
+# (dominated or not), not only the current Pareto-optimal archive, plus
+# within-pool duplicate removal. Scoped to n=4 (exploratory) given the
+# random-split archive-only dedup arm already measured ~10 hours of real
+# wall-clock time for n=8; this stricter, more expensive-to-satisfy
+# criterion is expected to cost at least as much per seed.
+experiment: e2_dedup_all_evaluated
+methods: [leaf_llm, static_ga, random_search]
+splits: [random]
+seeds: [0, 1, 2, 3]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: false
+log_diagnostics: true
+dedupe_pool: true
+dedupe_scope: all_evaluated
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

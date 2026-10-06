@@ -1,0 +1,28 @@
+# E4 -- Verifier calibration ablation (RQ3). Research plan §7, §5.3, §5.12.
+#
+# LipoAgent is NOT included as a comparator here. Its vendored, real code
+# (github.com/SAI-Lab-NYU/LipoAgent) was inspected directly: both the
+# Predict and Verify agents (txgemma/predict_agent.py, verify_agent.py)
+# only ever produce an efficiency_score (1-10, transfection performance);
+# neither has any toxicity, safety, or gating field. The original
+# characterization of LipoAgent as "toxicity-gated" (carried from an
+# unverified literature-search summary, flagged [verify] in the paper
+# draft) does not match the real tool. Fabricating a toxicity threshold on
+# top of its efficiency score would misrepresent what LipoAgent does, so
+# it is dropped from this comparison rather than forced into a role its
+# code doesn't support. See LEAF_Research_Plan.md §5.12 and the paper's
+# corrected Introduction/Related Work.
+experiment: e4_verifier_calibration_ablation
+methods: [leaf_full, leaf_ablation_e]
+# ablation_e: debate/conformal replaced by a single binary filter
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 400
+pool_size: 50
+q: 10
+acquisition_function: multi_objective_ucb   # E4 varies the Verifier, not the acquisition step, but run_experiment.py still requires this to be pinned/logged (§3.2, §8 pre-registration)
+reference_point: [-5.0, -5.0]
+target_coverage: 0.9
+recalibrate_every_round: true   # §5.3 -- never a single frozen calibration
+conformal_method: weighted_mondrian
+n_debate_agents: 3
+base_models: [modelA, modelB]   # >=2 distinct base models, §5.4

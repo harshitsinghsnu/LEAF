@@ -1,0 +1,23 @@
+# HeLa-only (single-objective) reanalysis of chemotype-cold, requested by
+# external review: the two-head hypervolume's RAW264.7 component fails the
+# pre-registered validity gate on chemotype-cold (rho=0.23 < 0.3), so the
+# headline two-objective hypervolume on that split is not fully
+# interpretable. This re-runs the identical primary protocol (n=8, B=40,
+# q=5, pool_size=10, UCB) with heads restricted to the one readout that
+# passes the gate (potency / HeLa, rho=0.49).
+experiment: e2_llm_helaonly_chemotype
+methods: [leaf_llm, static_ga, random_search]
+splits: [chemotype_cold]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 40
+pool_size: 10
+q: 5
+heads: [potency]
+reference_point: [-5.0]
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: false
+log_diagnostics: true
+dedupe_pool: false
+primary_statistic: bootstrap_ci_median

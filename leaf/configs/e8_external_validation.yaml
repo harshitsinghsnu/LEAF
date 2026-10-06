@@ -1,0 +1,8 @@
+# E8 -- External validation, conditional on LUMI-lab supplementary release. Research plan §7.
+experiment: e8_external_validation
+condition: "only runs if LUMI-lab supplementary pilot dataset (~1900 lipids) is released and licensed for reuse"
+seeds: [0]   # external set is fixed, not resampled
+budget: 400
+pool_size: 50
+q: 10
+acquisition_function: multi_objective_ucb

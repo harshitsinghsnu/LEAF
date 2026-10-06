@@ -1,0 +1,11 @@
+# E3 -- Hypothesis feedback ablation (RQ2). Research plan §7.
+experiment: e3_hypothesis_feedback_ablation
+methods: [leaf_full, leaf_ablation_d]   # ablation_d: ledger logged but not used to bias proposer
+split: chemotype_cold
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 400
+pool_size: 50
+q: 10
+acquisition_function: multi_objective_ucb
+hypothesis_every_k: 5
+max_counterfactual_pairs: 20

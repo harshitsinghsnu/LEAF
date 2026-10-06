@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+.venv/
+.venv_pymol/
+.env
+results/
+leaf/data/processed/oracle_gt.pkl
+*.log
+.DS_Store

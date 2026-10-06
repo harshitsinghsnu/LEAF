@@ -1,0 +1,12 @@
+# E6 -- Prompt/temperature/base-model sensitivity (RQ7). Research plan §7.
+experiment: e6_prompt_temperature_sensitivity
+prompt_versions: [proposer_v1]   # add v2, v3... as they are authored
+temperatures: [0.2, 0.7, 1.0]
+base_models: [modelA, modelB]
+split: random
+seeds: [0, 1, 2]   # per configuration
+budget: 200
+pool_size: 40
+q: 10
+acquisition_function: multi_objective_ucb   # required by run_experiment.py's pre-registration check (§3.2, §8)
+reference_point: [-5.0, -5.0]

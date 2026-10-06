@@ -1,0 +1,19 @@
+# Control condition for e2_dedup_check.yaml: identical protocol, same
+# reduced budget (15, for a fair matched comparison against the deduped
+# condition), but dedupe_pool: false -- isolates the effect of the dedupe
+# intervention itself from the effect of the smaller budget.
+experiment: e2_dedup_check_control
+methods: [leaf_llm, static_ga, random_search]
+splits: [random]
+seeds: [0, 1, 2, 3]
+budget: 15
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: false
+log_diagnostics: true
+dedupe_pool: false
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

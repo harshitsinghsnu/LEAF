@@ -1,0 +1,18 @@
+# E2 -- full Gemini Flash run (real hosted, frontier-class model),
+# the other half of §7 item 5. Requires GEMINI_API_KEY in the
+# environment (leaf/.env).
+experiment: e2_llm_gemini_full
+methods: [leaf_llm_gemini, static_ga, random_search]
+splits: [random, scaffold_cold, chemotype_cold]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+log_diagnostics: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

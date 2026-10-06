@@ -1,0 +1,26 @@
+# Dedicated conda environment for LEAF. Versions below are verified
+# exact matches to the environment that produced every result in this
+# repository (checked directly via each package's reported version, not
+# copied from an older/aspirational pin file).
+#
+# Create:   conda env create -f environment.yml
+# Activate: conda activate leaf
+# Install the leaf package itself (editable):
+#           pip install -e .
+name: leaf
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12.3
+  - numpy=1.26.4
+  - scipy=1.13.1
+  - scikit-learn=1.9.0
+  - rdkit=2024.3.5
+  - pyyaml=6.0.1
+  - matplotlib=3.11.1
+  - pandas=2.2.3
+  - pytest=7.4.4
+  - pip
+  - pip:
+      - gitpython==3.1.37
+      - pillow==10.3.0

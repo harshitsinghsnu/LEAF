@@ -1,0 +1,19 @@
+# First real exercise of the EHVI acquisition dispatch path (fixed this
+# revision after external review caught it was never branched on).
+# Exploratory scale (n=4), random split, identical protocol to the
+# primary UCB sweep (e2_llm_full.yaml) otherwise, so the two are directly
+# comparable.
+experiment: e2_ehvi_check
+methods: [leaf_llm, static_ga, random_search]
+splits: [random]
+seeds: [0, 1, 2, 3]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: expected_hypervolume_improvement
+use_verifier: true
+use_hypothesis: false
+log_diagnostics: true
+dedupe_pool: false
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

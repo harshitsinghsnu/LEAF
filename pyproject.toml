@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "leaf"
+version = "0.2.0"
+description = "LEAF: Lipid Evolutionary Adaptive Framework"
+requires-python = ">=3.10"
+
+[tool.setuptools]
+packages = ["leaf", "leaf.data", "leaf.fragments", "leaf.oracle", "leaf.agents", "leaf.archive",
+            "leaf.orchestrator", "leaf.baselines", "leaf.eval", "leaf.tests"]
+
+[tool.setuptools.package-data]
+"leaf.data" = ["raw/agile/*.csv", "raw/agile/LICENSE_AGILE", "raw/README.md", "raw/agile_extended/*.json"]

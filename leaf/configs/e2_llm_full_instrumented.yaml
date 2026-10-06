@@ -1,0 +1,21 @@
+# Re-run of the primary Llama 3.1 8B random-split condition (identical
+# protocol to e2_llm_full.yaml) purely to capture the new per-query
+# instrumentation (queries.csv: selected-query duplicate flag,
+# applicability-domain unseen-fragment-value count) that the original
+# e2_llm_full run predates. Hypervolume/significance numbers from this
+# run are an independent replication, not a correction of the original.
+experiment: e2_llm_full_instrumented
+methods: [leaf_llm, static_ga, random_search]
+splits: [random]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: false
+log_diagnostics: true
+dedupe_pool: false
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

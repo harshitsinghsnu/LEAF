@@ -1,0 +1,25 @@
+# Real, matched de-duplication-controlled check (external review, §7):
+# does the §6.2 underperformance persist once duplicate-driven budget
+# waste is structurally removed for every method (including baselines,
+# per LoopConfig.dedupe_pool's design), or is it an easily-engineered
+# safeguard problem rather than a proposal-quality problem?
+# Reduced budget (15, not 40) given the real, measured cost: deduping
+# forces many more rounds/LLM calls when most of a duplicate-heavy
+# proposer's pool gets filtered to zero survivors (confirmed empirically
+# before this run: 21 rounds needed to spend a 15-query budget, vs. 8
+# rounds for a 40-query budget without deduping).
+experiment: e2_dedup_check
+methods: [leaf_llm, static_ga, random_search]
+splits: [random]
+seeds: [0, 1, 2, 3]
+budget: 15
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: false
+log_diagnostics: true
+dedupe_pool: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

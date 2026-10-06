@@ -1,0 +1,19 @@
+# Exact versions verified against the environment that produced the
+# results in this repository (checked directly via each package's
+# __version__ / pip show, not copied from an aspirational/older pin file).
+# Python 3.12.3.
+numpy==1.26.4
+scipy==1.13.1
+scikit-learn==1.9.0
+pyyaml==6.0.1
+rdkit==2024.3.5
+pytest==7.4.4
+matplotlib==3.11.1
+pandas==2.2.3
+gitpython==3.1.37
+pillow==10.3.0
+
+# Optional, not required to reproduce any result in this repository.
+# leaf/eval/reproducibility.py probes for it defensively (try/except) when
+# logging the environment manifest, but no experiment reported here used it.
+# pymoo==0.6.1.1

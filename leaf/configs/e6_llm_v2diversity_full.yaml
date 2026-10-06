@@ -1,0 +1,19 @@
+# E6 -- diversity-aware prompt (v2_diversity), full power (8 seeds, all
+# three splits), Llama 3.1 8B. Promotes the n=4/one-split exploratory
+# check to a properly powered test of whether better prompting reverses
+# the §6.2 underperformance or only mitigates it.
+experiment: e6_llm_v2diversity_full
+methods: [leaf_llm_v2diversity, static_ga, random_search]
+splits: [random, scaffold_cold, chemotype_cold]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+log_diagnostics: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

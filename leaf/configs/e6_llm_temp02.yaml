@@ -1,0 +1,20 @@
+# E6 -- real prompt/temperature sensitivity, temperature=0.2 (vs. the
+# default 0.7 used for the full §6 result). Reduced scope (4 seeds, one
+# split) given this is a sensitivity check, not the headline claim --
+# same disclosure standard as the original n=4 pilots.
+experiment: e6_llm_temp02
+methods: [leaf_llm]
+splits: [random]
+seeds: [0, 1, 2, 3]
+budget: 40
+pool_size: 10
+q: 5
+temperature: 0.2
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+log_diagnostics: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median
