@@ -1,28 +1,26 @@
-# Dedicated conda environment for LEAF. Do not run experiments in a shared
-# / base environment -- package drift between runs is exactly the kind of
-# unreported confound RQ7 (reproducibility) is designed to catch.
+# Dedicated conda environment for LEAF. Versions below are verified
+# exact matches to the environment that produced every result in this
+# repository (checked directly via each package's reported version, not
+# copied from an older/aspirational pin file).
 #
 # Create:   conda env create -f environment.yml
 # Activate: conda activate leaf
-# Install the leaf package itself (editable, so code edits take effect
-# immediately, and so `import leaf` / `python scripts/*.py` work from any
-# directory without manually setting PYTHONPATH):
+# Install the leaf package itself (editable):
 #           pip install -e .
-# Update (after editing this file): conda env update -f environment.yml --prune
 name: leaf
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
-  - numpy=1.26.*
-  - scipy=1.11.*
-  - scikit-learn=1.3.*
-  - rdkit=2023.9.*
-  - pyyaml=6.0.*
-  - matplotlib=3.8.*
-  - pandas=2.1.*
-  - pytest=7.4.*
+  - python=3.12.3
+  - numpy=1.26.4
+  - scipy=1.13.1
+  - scikit-learn=1.9.0
+  - rdkit=2024.3.5
+  - pyyaml=6.0.1
+  - matplotlib=3.11.1
+  - pandas=2.2.3
+  - pytest=7.4.4
   - pip
   - pip:
-      - pymoo==0.6.1.1
-      - gitpython==3.1.43
+      - gitpython==3.1.37
+      - pillow==10.3.0

@@ -1,0 +1,17 @@
+# Separate, isolated environment used ONLY for scripts/render_pymol.py
+# (3D ball-and-stick rendering of best-found lipid structures). Kept
+# fully separate from environment.yml because PyMOL's dependency chain
+# requires a newer numpy than the version pinned above for the GP/active-
+# learning/statistics code, and the two environments never need to
+# exchange a running process -- render_pymol.py only reads PDB files
+# written by scripts/embed_3d.py (run in the main `leaf` environment).
+#
+# Create:   conda create -n pymol_env -c conda-forge pymol-open-source
+# Activate: conda activate pymol_env
+# Run:      python scripts/embed_3d.py        (in the `leaf` environment)
+#           python scripts/render_pymol.py    (in the `pymol_env` environment)
+name: pymol_env
+channels:
+  - conda-forge
+dependencies:
+  - pymol-open-source

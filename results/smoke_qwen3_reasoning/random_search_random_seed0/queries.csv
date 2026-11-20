@@ -1,5 +1,0 @@
-round,A,B,C,is_duplicate_of_archive,n_unseen_fragment_values,thinking_length,thinking_mentions_potency
-0,NC1CN2CCC1CC2,CCCCCCCCCCCC(=O)OCCC=O,CCCCCCCCCCCC[N+]#[C-],False,2,,
-0,CC(C)N1CCC(N)CC1,CCCCC/C=C\C/C=C\CCCCCCCC(=O)OCCC=O,[C-]#[N+]CCCCCCCCCCCCCCCC,False,3,,
-1,CC1=NN(C)C(N)=C1,CCCCCCCCCCCC(=O)OCCCCCCCC=O,[C-]#[N+]CCCCCCCCCCC,False,2,,
-1,NN1CCCCC1,CCCCCCCCCCCCCCCCCC(=O)OCCCCCC=O,[C-]#[N+]CCCCCCCCCCC,False,2,,
