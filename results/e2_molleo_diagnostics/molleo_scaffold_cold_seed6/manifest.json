@@ -1,0 +1,63 @@
+{
+  "experiment": "e2_molleo_diagnostics",
+  "method": "molleo",
+  "split": "scaffold_cold",
+  "seed": 6,
+  "config": {
+    "experiment": "e2_molleo_diagnostics",
+    "methods": [
+      "leaf_llm",
+      "molleo",
+      "molleo_v3scored",
+      "molleo_llm_mutation"
+    ],
+    "splits": [
+      "random",
+      "scaffold_cold",
+      "chemotype_cold"
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "budget": 40,
+    "pool_size": 10,
+    "q": 5,
+    "acquisition_function": "multi_objective_ucb",
+    "ucb_beta": 2.0,
+    "use_verifier": true,
+    "use_hypothesis": true,
+    "hypothesis_every_k": 4,
+    "log_diagnostics": true,
+    "reference_point": [
+      -5.0,
+      -5.0
+    ],
+    "primary_statistic": "bootstrap_ci_median"
+  },
+  "git": {
+    "commit": null,
+    "dirty": null,
+    "branch": null
+  },
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "sklearn": "1.9.0",
+    "rdkit": "2024.03.5",
+    "pandas": "2.2.3",
+    "matplotlib": "3.11.1",
+    "pymoo": "not installed",
+    "yaml": "6.0.1"
+  },
+  "python_version": "3.12.3",
+  "platform_info": "Windows-11-10.0.26200-SP0",
+  "timestamp_utc": "2026-11-17T10:18:30.653538+00:00",
+  "prompt_version": null
+}

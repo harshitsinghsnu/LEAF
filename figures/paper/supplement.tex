@@ -1,0 +1,292 @@
+\section{Secondary-component specification and implementation scope}
+\label{app:agents}
+\subsection{Debate and conformal verification}
+The general Verifier comprises $N$ independently prompted toxicologists spanning at least two base models. Each uses RDKit toxicophore matching, an active-learning toxicity posterior when available, and free-text reasoning. Same-model prompt or temperature variants measure prompt sensitivity rather than independent epistemic diversity. Inter-model agreement above 95\% flags insufficient diversity for H3.
+
+Held-out split-conformal calibration converts aggregated scores to intervals \citep{angelopoulos2023}; intervals crossing the decision threshold trigger abstention. Adaptive acquisition and refitting invalidate ordinary exchangeability. Weighted or Mondrian recalibration therefore occurs each round, with empirical coverage monitoring rather than a distribution-free guarantee under arbitrary shift. Calibration provenance, weighting, strata, and thresholds must be specified.
+
+The AGILE experiments contain no learned toxicity posterior. Calibration scores equal deterministic toxicophore labels, so residual uncertainty and interval width are zero. Repeated rule outputs reproduce binary-filter decisions, not independent epistemic evidence or demonstrated calibration of a learned safety signal. Testing this component requires independent toxicity labels and assay harmonization.
+
+\subsection{Hypothesis generation and testing}
+Every $k$ rounds, indexed LNP literature and Integrated Gradients or KernelSHAP attributions over the Pareto archive motivate structure--property hypotheses. Each rule requires matched counterfactual pairs, a minimum pair count, and a paired Wilcoxon test. Only frozen $\mathcal O_{\mathrm{GT}}$ supplies validation labels. All queried molecules, including controls, consume the shared budget. Incomplete pair sets remain untested; the Ledger updates only after validation and then informs proposals when enabled. Algorithm~\ref{alg:leaf} bounds complete pair sets by the remaining budget.
+
+Pair construction searches only Pareto members and requires a fixed control reagent. In the reproduced $B=40$, $q=5$, $k=4$ configuration, all 12 final members share one isocyanide among 14 possible values, different from that control. Correlated objectives can concentrate the frontier and eliminate matched controls. This explains the empty Ledger and undefined precision across 72 original sweep runs. Passing validation-logic unit tests does not establish that the optimization loop supplies testable pairs.
+
+The LUMI-lab association concerns brominated tails and potency, not organ tropism. Because its preprint was public from February 2025, a bare-LLM probe without retrieval or archive context must precede any rediscovery claim, with either outcome disclosed. Detected prior knowledge changes the interpretation to consistency checking. Neither the original AGILE vocabulary nor its virtual-library extension supplies halogenated reagents. H4 therefore requires literature-sourced, Ugi-compatible halogenated reagent structures and was not run.
+
+\section{Hosted inference and resource accounting}
+\label{app:hosted}
+Groq uses a chat-completions interface and Gemini a native interface. Both obtain credentials from environment variables, not stored experiment settings or command-line arguments. The following measurements describe the experimental period, not current quotas, prices, or availability.
+
+\textbf{Groq.} The recorded allowance for \texttt{llama-3.3-70b-versatile} was 100,000 tokens per day. Full-vocabulary prompts exposed 29 amines, 74 aldehydes, and 14 isocyanides and consumed about 1,850 tokens per call, or 148,000 per 80-call seed before retries. A second independent key encountered the same ceiling. Sampling eight values per slot reduced consumption to about 813 tokens per call and 65,000 per seed. Output validation still used the complete vocabulary, preserving validity but changing each call's visible choices.
+
+The allowance recovered over an observed rolling 24-hour window. Three daily attempts failed before a fourth succeeded; large quota probes were replaced by trivial probes to conserve tokens. Three random-split seeds accumulated over several days, all with zero rejection. Two underperformed both baselines; one exceeded GA only. A later catalog query reportedly omitted the model, but no dated endpoint snapshot supports a present-availability claim. An eight-seed, three-split sweep was not completed.
+
+\textbf{Gemini.} The recorded \texttt{gemini-flash-latest} allowance was 20 requests per day in its free-tier per-project, per-model bucket. The separate \texttt{gemini-flash-lite-latest} bucket enabled eight seeds on all three splits. These completed results supersede partial runs. Flash-Lite is not the flagship model or an established frontier-capability benchmark.
+
+\textbf{Rate limiting.} Hosted calls are paced about seven seconds apart. HTTP 429 responses invoke Groq's \texttt{Retry-After} header or an empirical Gemini delay, with a configured retry limit of eight before raising an error rather than silently replacing the model. Pacing controls bursts, not daily token totals; compression and quota recovery address the latter. Nominal workload costs exclude multiday scheduling and some retries.
+
+\textbf{Domain-adapted models.} TxGemma was not evaluated because of access gating and insufficient 16\,GB VRAM for its 27B chat model. Prebuilt ChemLLM and ChemDFM checkpoints were unavailable in the local backend. Meditron 7B, continued-pretrained on biomedical and clinical text from Llama 2, repeatedly returned unrelated tool-shaped JSON, invalid reagent structures, or literal vocabulary placeholders. Its 100\% rejection and fallback rate precluded a meaningful sweep. Per-run rejection logging distinguishes this failure from genuine model performance.
+
+\section{Diagnostic example and experiment provenance}
+\label{app:example}
+\subsection{Repeated proposals within one pool}
+A default-prompt Llama 8B pool of eight candidates, initialized from the recorded six-fragment random archive, repeats the first triple six times and each remaining triple once. All are labeled crossover. Ellipses in the last two isocyanide slots are retained abbreviations, not reconstructed molecules.
+\begin{Verbatim}[fontsize=\small,breaklines,breakanywhere]
+A=CN(C)CCN                         crossover x6
+B=O=C(/C=C\CCCCCCC)OCCCCCC=O
+C=[C-]#[N+]CCCCCCCC/C=C\CCCCCCCC
+A=NN1CCCCC1                       crossover x1
+B=C#CCCCCCCCCC(=O)OCCC=O
+C=...
+A=NC1CN2CCC1CC2                    crossover x1
+B=CCCCC/C=C\C/C=C\CCCCCCCC(=O)OCCC=O
+C=...
+\end{Verbatim}
+Within-pool repetition differs from archive duplication. Archive-only de-duplication removes existing Pareto matches without backfill but does not ensure mutual uniqueness among novel proposals.
+
+\subsection{Scope and reproducibility}
+The experiment record distinguishes oracle-validation outputs, per-seed search results, acquisition-disabled diagnostics, diversity prompting, and the corrected acquisition dispatch. These provenance records describe the study; the code that produced them is publicly released (Code availability statement), though per-seed raw query traces beyond the aggregated statistics reported here are available from the corresponding author upon request rather than bundled in the repository. Initial Llama and proposal-diversity diagnostics used four seeds before the eight-seed, three-split sweep. Later panel aggregates summarize larger samples and need not equal pilot rates. Acquisition-disabled results are diagnostic, not a complete eight-seed factorial study.
+
+Budget regimes are sequential controls, not interchangeable descriptions: $B=400$ tests saturation on the original 1,200-candidate space; $B=80$ reduces the budget before and after expansion to 30,044 candidates; $B=40$ defines the primary LLM protocol; and $B=15$ defines the initial four-seed de-duplication pilot. Primary inference uses eight random-split comparisons. Other tests are secondary or exploratory, including eight-seed de-duplication.
+
+The recorded reproducibility materials include exact partition indices with split-generation seed zero and 960 training and 240 test molecules per split, plus a manifest mapping tables to experiment settings and outputs. GP settings are a Tanimoto kernel, diagonal regularization $\alpha=10^{-6}$, internal target normalization, and random seed zero. Bootstrap intervals use 10,000 resamples, 95\% two-sided percentile bounds, and random seed zero. Objective definitions and the single-assay exception appear in Section~\ref{sec:objectives}. The internal null-result interpretation was not independently timestamped. The code release (Code availability statement) is not anonymized, consistent with this being a non-anonymous journal submission.
+
+\subsection{Eight-seed de-duplication and exploratory EHVI}
+\label{app:dedup-full8}
+For the random-split $B=40$ archive-de-duplication intervention, Llama 8B hypervolumes are 135.463, 90.001, 134.490, 123.479, 100.779, 100.779, 167.939, and 100.779. Matched GA values are 159.384, 109.838, 135.463, 114.082, 131.714, 201.687, 134.490, and 152.093; random-search values are 139.085, 155.060, 166.663, 162.617, 124.540, 175.418, 130.415, and 155.060.
+
+The independently replicated no-de-duplication control gives Llama values 100.779, 80.137, 100.779, 123.479, 100.779, 100.779, 100.779, and 128.397. Its GA values are 159.384, 112.501, 135.463, 100.518, 125.852, 199.167, 134.490, and 144.025; the random-search vector is unchanged. De-duplication applies to every method, so GA's nonzero duplication changes its trajectory, whereas no observed random-search duplicates are removed. Using the distinct GA control reproduces the median $-33.0$ and $p=0.023$ in Table~\ref{tab:dedup}. A prior transcription incorrectly reused the de-duplicated GA vector for this control; the corrected vectors retain the reported summary statistics.
+
+De-duplicated seeds 4 and 7 terminate after 31 and 14 queries because of repeated empty pools, not runtime errors. Thus the nominal $B=40$ cap is not exhausted in these two cases.
+
+The four-seed EHVI run gives Llama values 100.779, 88.219, 100.779, and 123.479; GA values 123.479, 112.501, 135.463, and 112.282; and random-search values 139.347, 155.060, 132.080, and 161.350. No Wilcoxon result is reported: the recorded invocation failed on the observed tie pattern, and an exact two-sided four-seed test cannot attain $p<0.05$ even without ties. Small $n$ limits significance resolution, rather than making every signed-rank calculation intrinsically invalid.
+
+\subsection{Cold-split de-duplication and secondary ablations}
+\label{app:dedup-other-splits}
+At $n=4$, scaffold-cold control differences are $-34.22$ against GA and $-39.96$ against random search; de-duplication gives $-5.09$ and $-13.37$. Chemotype-cold controls give $-45.29$ and $-75.06$, changing to $-34.98$ and $-70.16$. All seeds exhaust $B=40$. No signed-rank results are reported for these exploratory comparisons; only median differences and bootstrap intervals are used. Scaffold-cold narrows by factors of about 6 and 3, compared with 1.3 and 1.07 for chemotype-cold. This asymmetry remains mechanistically unresolved and must be interpreted alongside chemotype-cold's failed RAW264.7 validity gate.
+
+The $B=80$, $m=40$, $q=8$ Ledger and binary-filter ablations cover chemotype-cold and random splits, respectively, at eight seeds, not a complete cross-product. Recorded seed-zero traces report eight Ledger-ablation rounds with six final-round queries and nine binary-filter rounds with four final-round queries. These counts alone cannot reconcile $B=80$ with at most eight selected queries per round: partial final rounds do not explain the discrepancy. Complete initialization and query accounting are required before these trace counts can substantiate budget exhaustion. This limitation does not alter the reported equality of ablation outcomes.
+
+\subsection{Reporting corrections}
+Llama has four unadjusted significant comparisons, not five; together with Qwen 7B this is seven of twelve. Qwen 14B's positive random-split point is against GA. Groq's 7.1\% duplication is below the small-model and GA rates but above Qwen 14B's aggregate 3.5\%. Temperature 1.0's 72.2\% duplication is not below the separate 67.8\% default diagnostic. Seven to 21 de-duplicated pilot rounds versus three control rounds imply a 2.3--7-fold increase. The three implementation errors concern split-oracle reuse, mutation mismatch, and acquisition dispatch. These distinctions correct interpretation without changing measured entries.
+
+\section{Baseline proposal-pool specification}
+\label{app:baselines}
+All methods share archive and vocabulary access, $m=10$, $q=5$, the evaluation oracle, and the acquisition function. By default, no method removes within-pool duplicates. Archive-only filtering, when enabled, removes exact Pareto matches before scoring; all-evaluated filtering also removes previously evaluated dominated candidates and within-pool repetitions.
+
+Each method constructs its proposal pool differently from a common archive and vocabulary. The LLM proposer draws up to eight sampled Pareto members per call, mutates by having the model choose one slot to change, and crosses over by having the model recombine two archive parents; duplicate handling is none by default, with the common optional filters available to every method. Static-GA draws two uniformly sampled archive members without replacement as parents, mutates with probability 0.5 by redrawing one random slot uniformly, and crosses over by copying each slot from a uniformly chosen parent; duplicate handling is likewise none by default with the same optional filters available. Random search draws independent uniform vocabulary samples with no parent source, mutation, or crossover operator, and no duplicate handling is needed since its measured archive-duplicate rate is zero. The Thompson bandit refits per-slot Beta posteriors from the archive each round, draws independently from those posteriors categorically (its analog of mutation), performs no parent recombination (no crossover), and applies no duplicate handling by default.
+
+Invalid LLM outputs are replaced individually by the rule-based proposer and counted in the rejection rate. By contrast, no method backfills candidates removed by verification or novelty filtering to restore a fixed pool size. If fewer than $q$ survive, acquisition queries $\min(q,B_t,|P_t'|)$; subsequent rounds replenish proposals. GA falls back to a uniform triple only with fewer than two archive members, including the initial empty archive. All methods use the same UCB or EHVI selection, not method-specific shortcuts.
+
+\section{LLM inference and prompt specification}
+\label{app:llm-repro}
+Instruction-tuned identifiers are \texttt{llama3.1:8b}, \texttt{qwen2.5:7b}, and \texttt{qwen2.5:14b} for local Ollama inference, \texttt{gemini-flash-lite-latest} for Gemini, and \texttt{llama-3.3-70b-versatile} for Groq. Local runs use the backend library's default GGUF quantization; hosted APIs expose no local quantization control. The recorded aliases do not establish immutable checkpoint revisions.
+
+No system prompt is used. Calls are single-turn and stateless, with context reinserted each time. Default temperature is 0.7; exploratory checks use 0.2 and 1.0. Top-$p$, top-$k$, and repetition penalties retain backend defaults. Local calls request JSON formatting and draw a call seed from the proposer's seeded generator; reproducibility remains backend-version dependent. Hosted calls request JSON in the prompt without server-side schema enforcement and allow 300 output tokens. The default retry limit is two, increased to eight for hosted runs; quota handling is described in Appendix~\ref{app:hosted}.
+
+Reagent strings must match vocabulary entries character-for-character. Invalid outputs invoke individual rule-based fallback and are tracked through the rejection rate, which remains at most a few percent except for Meditron's 100\%. Default prompts expose the full vocabulary; Groq alone samples eight values per slot. Each call shows up to eight uniformly sampled archive members. There is no additional truncation or score summary. Consequently, the default proposer sees identities and archive membership, not objective values or an explicit maximization instruction.
+
+The default user-turn template is reproduced below, with archive members and vocabulary lists interpolated at runtime. Line wrapping is typographic only.
+\begin{Verbatim}[fontsize=\small,breaklines,breakanywhere]
+You are the Proposer Agent in an evolutionary lipid-design loop. Candidates are Ugi
+three-component-reaction lipids, each a triple (A, B, C):
+A = amine, one of: [...]
+B = aldehyde, one of: [...]
+C = isocyanide, one of: [...]
+
+Current Pareto archive (sample):
+- A=... B=... C=...
+[up to 8 lines]
+
+Propose exactly ONE new candidate via crossover (recombining A/B/C from two archive
+parents) or mutation (changing exactly one of A/B/C from a single archive parent, or
+a random triple if the archive is empty). The value of A, B, and C in your output
+MUST be copied EXACTLY (character for character) from the lists above - do not
+paraphrase or alter the SMILES strings in any way.
+
+Respond with ONLY a single JSON object shaped like:
+{"A": "<one of the A values>", "B": "<one of the B values>", "C": "<one of the C values>",
+  "provenance": {"operator": "crossover" or "mutation", "parents": ["..."]}}
+\end{Verbatim}
+The diversity variant adds a paragraph describing repetition and listing up to 20 evaluated triples to avoid, without other changes. The scored variant supplies sampled members' actual HeLa and RAW264.7 values and explicitly instructs maximization of both objectives.
+
+\section{Equivalence and multiplicity}
+\label{app:equivalence}
+A non-significant difference test does not establish equivalence. The post hoc practical margin is 10\% of the baseline's median hypervolume on the relevant split. Table~\ref{tab:tost} reports the six available two-one-sided-test (TOST) results; it is not a complete equivalence analysis of every primary comparison.
+
+\begin{table}[htbp]
+\caption{Post hoc equivalence tests with a margin of 10\% of baseline median hypervolume. No reported test reaches $p<0.05$.}
+\label{tab:tost}
+\centering
+\begin{tabular}{@{}llccc@{}}
+\toprule
+Model & Baseline & Threshold ($\pm$) & Mean diff & TOST $p$ \\
+\midrule
+Llama 3.1 8B & GA (random) & 15.3 & $-45.4$ & 0.947 \\
+Llama 3.1 8B & RS (random) & 15.5 & $-39.2$ & 0.988 \\
+Qwen2.5 14B & GA (random) & 15.3 & $-9.6$ & 0.354 \\
+Qwen2.5 14B & RS (random) & 15.5 & $-3.4$ & 0.102 \\
+Qwen2.5 14B & GA (scaffold-cold) & 13.7 & $+20.6$ & 0.630 \\
+Qwen2.5 14B & RS (scaffold-cold) & 13.7 & $+25.8$ & 0.710 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Qwen 14B therefore has neither evidence of a difference nor evidence of equivalence on random and scaffold-cold splits at this margin and $n=8$. Larger samples or a different justified margin would be needed to resolve practical equivalence. The margin was not prespecified before experimentation.
+
+The primary multiplicity family contains the four fully replicated models against two baselines on the random split. Table~\ref{tab:holm} retains the raw $p$-values and adds valid Holm-adjusted values at family-wise $\alpha=0.05$.
+
+\begin{table}[htbp]
+\caption{Holm correction for the eight primary random-split comparisons. GA denotes static-GA and RS random search. The step-down procedure stops at the first failed threshold; tied minimum $p$-values cannot yield an isolated rejection.}
+\label{tab:holm}
+\centering
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Comparison & Raw $p$ & Ordered threshold & Adjusted $p$ \\
+\midrule
+Llama 8B vs.\ RS & 0.0078125 & 0.00625 & 0.0625 \\
+Gemini vs.\ GA & 0.0078125 & 0.00714 & 0.0625 \\
+Gemini vs.\ RS & 0.0078125 & 0.00833 & 0.0625 \\
+Qwen 7B vs.\ RS & 0.015625 & 0.01000 & 0.078125 \\
+Llama 8B vs.\ GA & 0.0546875 & 0.01250 & 0.21875 \\
+Qwen 7B vs.\ GA & 0.078125 & 0.01667 & 0.234375 \\
+Qwen 14B vs.\ GA & 0.7421875 & 0.02500 & 1.0000 \\
+Qwen 14B vs.\ RS & 0.7421875 & 0.05000 & 1.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The minimum raw $p=0.0078125$ exceeds the first threshold, 0.00625, so no null hypothesis is rejected. A previous rank-by-rank interpretation incorrectly retained the third tied comparison while ignoring the step-down stopping rule. Correcting that interpretation weakens model-specific inferiority claims but leaves the conclusion of no demonstrated improvement unchanged. Displayed unadjusted tests elsewhere must not be read as family-wise evidence.
+
+\section{Normalized hypervolume}
+\label{app:normalized-hv}
+Full-space hypervolume is obtained by embedding and evaluating all 30,044 candidates with each frozen oracle, without LLM calls or a search budget. It is a diagnostic denominator, not information exposed to a budgeted search. With an empty initial archive and initial hypervolume zero,
+\begin{equation}
+\mathrm{NormalizedHV}=\frac{\mathrm{HV}_{\mathrm{method}}}{\mathrm{HV}_{\mathrm{full\text{-}space}}}.
+\end{equation}
+\begin{table}[htbp]
+\caption{Attainable hypervolume over the complete candidate space under each split-specific frozen oracle.}
+\label{tab:full-space-hv}
+\centering
+\begin{tabular}{@{}lc@{}}
+\toprule
+Split & Full-space hypervolume \\
+\midrule
+Random & 258.2 \\
+Scaffold-cold & 235.9 \\
+Chemotype-cold & 199.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+In the primary random-split runs, Llama 8B reaches 106.4--129.5, or 41--50\% of the full-space value; GA reaches 103.8--219.7, or 40--85\%; random search reaches 124.5--175.4, or 48--68\%. These ranges refer to the primary runs, not intervention replicates. They do not establish a universal half-frontier upper bound for all models or interventions. At $B=40$, the query cap covers about 0.13\% of the space. Multiplying every paired difference on a split by the same positive normalization factor changes its scale, not the corresponding significance result.
+
+\section{All-evaluated de-duplication}
+\label{app:dedup-all-evaluated}
+For random-split seeds 0--3 with $B=40$, stricter de-duplication gives Llama 8B values 135.463, 232.263, 134.490, and 135.463; GA values 182.084, 112.501, 135.463, and 94.317; and random-search values 139.085, 155.060, 166.663, and 162.617. The matched control gives Llama values 100.779, 80.137, 100.779, and 123.479; GA values 159.384, 112.501, 135.463, and 100.518; and the same random-search vector. The unchanged random-search outcomes apply to this matched comparison, not every separate experiment on the split. Seed 1's value of 232.263 is retained and strongly influences the exploratory result.
+
+\section{Objective-scored prompting}
+\label{app:v3scored}
+The four scored-prompt hypervolumes are 96.167, 232.263, 135.463, and 128.397, at $B=40$ on the random split. GA values are 159.384, 112.501, 135.463, and 100.518; random-search values are 139.085, 155.060, 166.663, and 162.617. These are the no-de-duplication baseline vectors, not the stricter-filter GA vector. The default-prompt Llama values are 100.779, 80.137, 100.779, and 123.479.
+
+Seed 1 reaches 232.262563068695 in both scored prompting and all-evaluated de-duplication. The recorded per-round reagent sequences differ, excluding identical cached query trajectories. Convergence from a shared seed makes these two exploratory checks dependent; it does not justify treating their favorable medians as independent corroboration.
+
+\section{HeLa-only chemotype-cold reanalysis}
+\label{app:helaonly}
+The single-objective restriction uses the primary $n=8$, $B=40$, $m=10$, $q=5$ protocol, the HeLa readout, and reference point $(-5.0)$. Llama 8B hypervolumes are 10.994, 10.609, 10.527, 10.905, 8.826, 11.422, 12.917, and 11.422. Both baselines give 13.878, 14.147, 17.542, 17.159, 13.142, 16.706, 12.766, and 14.959. Their identical vectors reflect equal best-found values under this metric. Llama's paired median difference is $-3.93$ against each, with unadjusted $p=0.015625$. The implementation explicitly makes the objective heads configurable for this exception rather than retaining the historical two-head default.
+
+\section{Evidence-use checks}
+\label{app:leakage8b}
+\subsection{Leakage probe (Llama 3.1 8B)}
+Llama 3.1 8B zero-shot scores the same 50 held-out random-split lipids used for the Qwen3-8B control, from 1 to 10, with no labels. At temperature zero, rejection is zero but all 50 emitted scores equal 8.0 -- a degenerate constant output for which Spearman correlation against the fitted oracle's potency prediction (itself $\rho=0.683$ on this split, Section~\ref{sec:validity}) is undefined rather than computably near zero; this is tracked explicitly (\texttt{degenerate\_constant\_output=true} in the recorded result) rather than silently reported as a correlation of zero. Repeating the identical protocol at temperature 0.7 (same 50 molecules, zero rejection) breaks the degeneracy: three distinct scores are emitted (6, 7, 8), and Spearman correlation is $\rho=-0.0065$, $p=0.96$. This confirms the temperature-zero degeneracy was a greedy-decoding artifact of this specific prompt and model, not evidence that the question cannot be meaningfully answered, and the non-degenerate result is consistent with the separate Qwen3-8B zero-shot control ($\rho=0.014$, $p=0.92$, $n=50$): both models show a measured near-zero correlation once decoding is non-degenerate, supporting the conclusion that no exploitable pretrained potency signal is recoverable from either model under zero-shot scoring.
+
+\subsection{Rank-only prompt (\texttt{v4\_rank})}
+\label{app:v4rank}
+The prompt lists up to eight sampled archive members in rank order by summed potency and RAW264.7 score, with no numeric magnitudes shown, and otherwise matches the default template. On four matched random-split seeds at $B=40$, hypervolumes are 128.397, 227.271, 142.046, and 128.397, against the GA baseline vector 159.384, 112.501, 135.463, and 100.518, and random-search vector 139.085, 155.060, 166.663, and 162.617, giving per-seed differences against GA of $-31.0$, $+114.8$, $+6.6$, and $+27.9$ (median $+17.2$) and against random search of $-10.7$, $+72.2$, $-24.6$, and $-34.2$ (median $-17.7$); both CIs cross zero at $n=4$.
+
+\subsection{Chain-of-thought rationale (\texttt{v5\_cot})}
+\label{app:cot}
+The schema requires a non-empty \texttt{"rationale"} field of one to two sentences describing the structural reasoning behind the proposed crossover or mutation; outputs without one are rejected and retried, counted toward the rejection rate. On four matched random-split seeds at $B=40$, hypervolumes are 128.397, 106.697, 128.397, and 104.358, giving median differences $-6.4$ against GA and $-43.3$ against random search. Rejection remains under 5\%, so the requirement is enforced rather than decorative.
+
+\subsection{Score-shuffle perturbation (\texttt{v6\_shuffled})}
+\label{app:shuffle}
+The prompt displays real potency and RAW264.7 values exactly as in the scored prompt, but the values are independently shuffled across the displayed fragments before rendering, breaking the true value-to-fragment correspondence while preserving the set of displayed numbers. On four matched random-split seeds at $B=40$, hypervolumes are 96.876, 232.263, 135.463, and 128.397, giving median differences $+13.9$ against GA and $-32.7$ against random search -- matching the correctly scored prompt's $+13.9$ and $-32.7$ (Table~\ref{tab:scored-prompt}) to one decimal place. Direct per-query comparison of reagent triples against the correctly scored run's \texttt{queries.csv} finds real divergence in three of four seeds: seed 0 differs on 28/40 queries, seed 1 on 8/40, seed 2 on 0/40 (fully identical trajectory), and seed 3 on 7/40. The attainable Pareto frontier under this budget and split is narrow enough that distinct query trajectories, including trajectories built from deliberately false score mappings, often converge on the same final hypervolume. Aggregate equivalence therefore reflects frontier concentration, not proof that scores go unused.
+
+\subsection{Evidence-conflict probe}
+\label{app:conflict}
+A fixed eight-member sample is drawn from the random-split training partition's evaluated archive, independently for each of three probe-sampling seeds (0, 1, 2). Within each sample, true rank is computed by summed potency and RAW264.7 score; displayed rank labels are the true ranking inverted (true-best shown as rank 8, true-worst shown as rank 1). This falsified ranking is rendered in the \texttt{v4\_rank} template and issued to Llama 3.1 8B 40 times independently per sample (temperature 0.7, distinct call seeds), each call producing one proposal via the proposer's own parsing path, not the full search loop. Each proposal's nearest neighbor among the eight shown members is found by minimum fragment-slot edit distance; calls that tie between multiple equally near members or resolve to no identifiable nearest member are excluded from the per-sample tally.
+
+Table~\ref{tab:conflict-samples} reports all three samples. The three samples do not agree: the fraction of resolved calls nearest the falsely labeled-best member (the true worst) is 14.8\%, 84.2\%, and 46.2\%, and the fraction of calls that tie or fail to resolve to a unique nearest member is also highly variable (13, 2, and 27 of 40) -- plausibly reflecting how similar the eight randomly drawn archive members happen to be to each other in a given sample, which is not controlled across draws. The one pattern that holds in all three samples is that the genuinely best member is almost never the nearest neighbor regardless of its (false) label: 0, 3, and 0 of resolved calls, pooled 3/78 (3.8\%), well below the 12.5\% uniform base rate for an 8-member set. A single fixed-archive run of this probe therefore cannot support a specific claim about what proposals are tracking when the true and false quality signals conflict -- the evidence here rules out "tracks true quality despite the false label" but does not establish a replicated alternative; seed 1's 84.2\% false-label-following, taken alone, would have suggested near-complete capture by the false label, while seed 0's 14.8\% would have suggested near-independence from either label, illustrating why this probe needs more than one fixed sample before its outcome is reported as a stable finding.
+
+\begin{table}[htbp]
+\caption{Evidence-conflict probe across three independently drawn fixed archive samples, 40 calls each. ``Other'' denotes a resolved nearest neighbor that is neither the true-best nor the falsely labeled-best (true-worst) member.}
+\label{tab:conflict-samples}
+\centering
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+Sample seed & Resolved/40 & Nearest true-best & Nearest false-best & Nearest other & Tie/unresolved \\
+\midrule
+0 & 27 & 0 (0\%) & 4 (14.8\%) & 23 (85.2\%) & 13 \\
+1 & 38 & 3 (7.9\%) & 32 (84.2\%) & 3 (7.9\%) & 2 \\
+2 & 13 & 0 (0\%) & 6 (46.2\%) & 7 (53.8\%) & 27 \\
+\midrule
+Pooled & 78 & 3 (3.8\%) & 42 (53.8\%) & 33 (42.3\%) & 42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The pooled row is reported for completeness but should not be read as a single stable rate: it averages over three samples whose individual false-label-following rates span a 69-percentage-point range, so the pooled 53.8\% is an artifact of seed 1's outlier sample rather than a representative summary. The pooled true-best rate (3.8\%) is the only quantity that is consistent in direction across all three samples and is therefore the one load-bearing conclusion from this probe.
+
+\subsection{Genuine reasoning-mode proposer}
+\label{app:reasoning}
+Ollama's native \texttt{think=true} field is enabled for \texttt{qwen3:8b}, a mechanism distinct from the prompted \texttt{v5\_cot} rationale; requesting JSON-formatted output simultaneously with \texttt{think=true} was found to silently suppress all reasoning output and is therefore not used, with JSON recovered instead by a hardened parser tolerant of markdown-fenced or prose-wrapped output. Under the default (unscored) prompt, four matched random-split seeds at $B=40$ give Llama-comparable baselines (GA: 159.384, 112.501, 135.463, 100.518; random search: 139.085, 155.060, 166.663, 162.617) against reasoning-mode hypervolumes 101.998, 136.623, 93.679, and 89.201, giving median differences $-26.55$ (CI $[-57.39,24.12]$) against GA and $-55.04$ (CI $[-73.42,-18.44]$) against random search. Diagnostics over 160 calls show 155 produced a reasoning trace (mean length 5,669 characters) and 0 mentioned potency or the objective. Under the scored prompt, all four seeds completed after raising Ollama's per-call timeout to 300s (from the 120s default), following one timeout-related failure on the first attempt. Scored-prompt hypervolumes are 101.203, 98.645, 111.197, and 111.197 against the same GA and random-search baseline vectors as above, giving median differences $-19.1$ (GA) and $-53.4$ (random search), both CIs crossing zero. Diagnostics over 160 calls show 152 produced a reasoning trace (mean length 6,877 characters) and 124 (77.5\%) mentioned potency, versus 0/155 under the default prompt -- a sharp rise in measured engagement with the displayed evidence that does not translate into a hypervolume advantage over non-reasoning Llama 8B under the identical scored prompt (Table~\ref{tab:scored-prompt}). Per-seed wall time for the default-prompt condition ranges from 2,801 to 5,290 seconds, roughly 5--10$\times$ the non-reasoning Llama or Qwen latency in Table~\ref{tab:original-6}.
+
+\subsection{Prompt-variant latency}
+\label{app:variant-latency}
+A dedicated timing run issues eight fresh Llama 3.1 8B calls per prompt variant against a fixed eight-member synthetic archive, measuring wall-clock seconds per call under identical local GPU conditions within one session. Mean seconds per call are 11.85 (default), 10.59 (\texttt{v3\_scored}), 9.75 (\texttt{v4\_rank}), 15.60 (\texttt{v5\_cot}), and 13.99 (\texttt{v6\_shuffled}). This fresh run's default-prompt mean (11.85s) is higher than the 4.0s reported in Table~\ref{tab:original-6}, reflecting different GPU load/warm-state conditions between sessions rather than a changed model or prompt; absolute values are therefore not directly comparable across the two measurements, but the relative ordering within this single session is informative. The rationale-requiring \texttt{v5\_cot} variant is the slowest, consistent with longer generated output and occasional rejection-retry overhead from the enforced non-empty rationale field; the shuffled and rank-only variants are within the same order of magnitude as the default and scored prompts, since none of these changes to the prompt content substantially change expected output length.
+
+\section{Structural inspection: additional detail}
+\label{app:structures}
+\subsection{3D rendering pipeline}
+Three-dimensional conformers for Figure~\ref{fig:structures} are generated from each best-found SMILES by RDKit's ETKDG embedding followed by MMFF94 force-field geometry optimization (2,000 iterations), using the main project Python environment, and written to PDB files. These are rendered as ball-and-stick images (PyMOL's \texttt{util.cbaw} coloring, white background, ray-traced) using open-source PyMOL installed via conda-forge in a separate, isolated conda environment created specifically for this rendering step. This isolation is deliberate: PyMOL's dependency chain requires a newer numpy than the numpy version pinned throughout the rest of this project's GP, active-learning, and statistical-testing code, and the rendering step does not need to share a Python environment with any numerical result reported elsewhere in this paper. No lipid geometry, charge state, or protonation beyond RDKit's default valence-based structure generation is assumed; this is a visualization of real queried reagent identities, not a conformational or energetic claim about the physical lipid.
+
+\subsection{Best-found lipids by method}
+For the objective-scored-prompt check's seed 1, random split, Table~\ref{tab:best-lipids} gives the best-found triple by frozen-oracle predicted HeLa+RAW264.7 sum for each method. Each is the arg-max over that method's 40 queried candidates on this seed only, not a claim about the global optimum or about any other seed; different seeds and methods can and do find different best candidates.
+
+\begin{table}[htbp]
+\caption{Best-found reagent triple per method, objective-scored-prompt check, random split, seed 1. SMILES strings wrap at arbitrary characters (\texttt{seqsplit}) since they contain no natural word breaks.}
+\label{tab:best-lipids}
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}lXXXc@{}}
+\toprule
+Method & A (amine) & B (aldehyde) & C (isocyanide) & Predicted (HeLa, RAW), sum \\
+\midrule
+Llama 8B (scored prompt) & \seqsplit{CCN(CC)CCCN} & \seqsplit{CCCCCC(C)CCC(=O)OCCCC=O} & \seqsplit{[C-]\#[N+]CCCCCCCC/C=C\textbackslash CCCCCCCC} & (12.0, 7.4), 19.3 \\
+Static-GA & \seqsplit{NCCN1CCCCC1} & \seqsplit{CCCCCCCCCCCCCCCC=O} & \seqsplit{[C-]\#[N+]CCCCCCCCCCC} & (8.6, 2.9), 11.5 \\
+Random search & \seqsplit{CCCCN(CCCC)CCCN} & \seqsplit{CC(CCC(OCCCCCC=O)=O)CCCCC} & \seqsplit{[C-]\#[N+]CCCCCCCCCCCCCCCC} & (9.7, 5.6), 15.2 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Fragment-importance methodology and full range}
+\label{app:fragment-importance}
+For each of the 29 amine, 74 aldehyde, and 14 isocyanide values in the full extended vocabulary, every full-vocabulary candidate (30,044 total) containing that value is identified, and the frozen random-split $\mathcal O_{\mathrm{GT}}$'s predicted HeLa+RAW264.7 sum is averaged across those candidates. Values appearing in fewer than 20 candidates are excluded to avoid small-sample means (this excludes none of the 29 amine or 14 isocyanide values, and a subset of the 74 aldehyde values). This is computed directly from the oracle's posterior mean over the full combinatorial space -- no search is run, no budget is charged, and no counterfactual pair or significance test is constructed, unlike the Hypothesis Ledger's intended design (Appendix~\ref{app:agents}).
+
+Overall mean (across all 30,044 candidates) is 7.02 with standard deviation 1.41. The amine slot shows the widest range (3.20--9.61, a 6.4-point spread, dominated by cyclic tertiary amines with short linkers at the top and more flexible or doubly cyclic diamine-type structures at the bottom). The aldehyde slot's range is 3.49--8.93 (5.4 points); the five lowest-scoring values are all doubly unsaturated (diene) long-chain tails, and the five highest are saturated, branched, shorter-chain linkers. The isocyanide slot's range is narrow, 6.83--7.38 (0.55 points), and is dominated by tail length rather than unsaturation, though the two highest-scoring values are both mono-unsaturated. This means the apparent unsaturation association at slot C is both weaker in magnitude and opposite in direction to the one at slot B, so it should not be read as evidence for a general unsaturation-potency rule in this chemistry; any such claim would require an independently validated structure-activity study, not a correlational read of one fitted oracle.
+
+\section{Literature-lipid domain-coverage check}
+\label{app:lit-lipids}
+Three clinically deployed ionizable lipids are checked against this paper's real \texttt{decompose\_lipid} routine (validated to exactly round-trip all 1,200 labeled AGILE lipids, Section~\ref{sec:protocol}): MC3 (DLin-MC3-DMA, PubChem CID 49785164), SM-102 (PubChem CID 126697616), and ALC-0315 (PubChem CID 122666778). Canonical SMILES for each were obtained from their respective PubChem records and independently verified by computing each SMILES's molecular formula with RDKit and matching it exactly against the formula listed on that compound's own PubChem page (C43H79NO2, C44H87NO5, and C48H95NO5, respectively) before use, rather than trusting a search-engine summary.
+
+All three SMILES parse validly in RDKit, but none match the Ugi-3CR core substructure the decomposition routine requires (\texttt{decomposes\_as\_ugi3cr=False} for all three, recorded in \texttt{results/e\_literature\_lipid\_check.json}). This is the expected outcome: MC3 is a dilinoleyl ester tertiary amine, SM-102 and ALC-0315 are branched-ester tertiary amines with hydroxyl/ether linkers -- none are products of an Ugi three-component reaction, so none should be expected to share this paper's core scaffold. The check is reported because it was previously named in the main text as a planned but unreported comparison (Recall@$k$ against MC3/SM-102/ALC-0315, Section~\ref{sec:protocol}); running it and disclosing the negative result removes that gap rather than leaving a stated plan silently unaddressed. No oracle potency prediction is computed for these three compounds, since the frozen $\mathcal O_{\mathrm{GT}}$ requires a Morgan-fingerprint embedding of an assembled Ugi-3CR fragment triple and these molecules supply no such triple.
+
+\section{Panel interpretation}
+Figure~\ref{fig:architecture} presents the budget-accounted architecture; Algorithm~\ref{alg:leaf} and Section~\ref{sec:objectives} define implemented budget accounting and endpoints. Hypothesis generation need not query the oracle, but counterfactual validation does. In the reported experiments, the Verifier is deterministic and the Ledger remains empty.
+
+Figure~\ref{fig:performance} reports held-out validity, median paired differences with bootstrap intervals, the zero reference line, unadjusted significance markers, and proposal diversity. Minimum edit distance counts changed reagent slots, from zero to three. Random search's zero duplication is measured, not missing. Qwen 14B is the low-duplication exception among the four replicated models. Gemini's aggregate duplication exceeds GA's, but its chemotype-cold value of 19.2\% is below GA's reported 22.5\%; split-specific results take precedence over blanket comparisons. Pilot and aggregate diagnostics remain distinct.
+
+Figure~\ref{fig:diagnostics} retains mean learning curves with standard deviations, early baseline gains and LLM flattening, log-scale nominal workload costs, and the non-significant 60-run duplication correlation. Its heatmaps include all 36 eight-seed comparisons, including the diversity prompt and non-LLM Thompson bandit. Groq's three-seed experiment is excluded from those heatmaps, not treated as a complete eight-seed result.
+
+\input{numerical_tables}

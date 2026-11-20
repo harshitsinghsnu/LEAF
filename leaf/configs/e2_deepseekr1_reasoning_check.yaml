@@ -1,0 +1,27 @@
+# Second reasoning-model check (DeepSeek-R1 8B, distilled from Llama 3.1
+# 8B -- a different lineage from Qwen3) to test whether the "genuine
+# engagement without performance gain" finding generalizes beyond one
+# reasoning-tuned model. Same protocol as e2_qwen3_reasoning_check:
+# native "think" API, format:"json" dropped (verified to also suppress
+# reasoning for this model), default prompt (v1), no scores shown.
+# Exploratory scale, n=2 (reduced from the primary Qwen3 check's n=4):
+# DeepSeek-R1 8B measured at ~115-265s per single-candidate call on this
+# machine (vs Qwen3's ~35-66s average), so n=4 across both prompt
+# conditions was not completed within the available session time -- this
+# reduction is disclosed, not silent, matching how the Groq n=3
+# exploratory check (Section 3.2) is already handled in this paper.
+experiment: e2_deepseekr1_reasoning_check
+methods: [leaf_llm_deepseekr1_reasoning, static_ga, random_search]
+splits: [random]
+seeds: [0, 1]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: false
+log_diagnostics: true
+dedupe_pool: false
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

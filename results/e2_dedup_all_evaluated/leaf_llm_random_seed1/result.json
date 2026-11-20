@@ -1,0 +1,14 @@
+{
+  "experiment": "e2_dedup_all_evaluated",
+  "method": "leaf_llm",
+  "split": "random",
+  "seed": 1,
+  "final_hypervolume": 232.26256274661122,
+  "total_queries_issued": 40,
+  "n_rounds": 26,
+  "proposer_reject_rate": 0.007692307692307693,
+  "hypothesis_precision": NaN,
+  "frac_selected_duplicate_of_archive_overall": 0.0,
+  "mean_n_unseen_fragment_values": 1.3,
+  "frac_queries_fully_out_of_domain": 0.05
+}

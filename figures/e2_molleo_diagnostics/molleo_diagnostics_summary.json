@@ -1,0 +1,531 @@
+{
+  "hv_comparisons": {
+    "molleo_vs_leaf_llm_random": {
+      "method_a": "molleo",
+      "method_b": "leaf_llm",
+      "split": "random",
+      "n_seeds": 8,
+      "median_diff": 77.06606692320925,
+      "ci_low": 36.59220667080646,
+      "ci_high": 128.4933888367691,
+      "wilcoxon_p": 0.0078125,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        229.2724385362752,
+        96.7575643664953,
+        160.5407441544998,
+        137.37125637031255,
+        253.90424013490386,
+        198.98000038309053,
+        222.76730796253685,
+        173.1139868072654
+      ],
+      "hv_b_per_seed": [
+        100.77904969950609,
+        87.46787390728214,
+        100.77904969950609,
+        100.77904969950609,
+        100.77904969950609,
+        100.77904969950609,
+        128.39686857111207,
+        128.39686854246776
+      ]
+    },
+    "molleo_v3scored_vs_leaf_llm_random": {
+      "method_a": "molleo_v3scored",
+      "method_b": "leaf_llm",
+      "split": "random",
+      "n_seeds": 8,
+      "median_diff": 75.42231122776325,
+      "ci_low": 35.06355756251102,
+      "ci_high": 133.35240796950674,
+      "wilcoxon_p": 0.0078125,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        234.13145766901283,
+        111.56935451102729,
+        157.2532327636078,
+        135.8426072620171,
+        253.90424015039204,
+        202.02944815846476,
+        222.76730796253685,
+        163.55139098319523
+      ],
+      "hv_b_per_seed": [
+        100.77904969950609,
+        87.46787390728214,
+        100.77904969950609,
+        100.77904969950609,
+        100.77904969950609,
+        100.77904969950609,
+        128.39686857111207,
+        128.39686854246776
+      ]
+    },
+    "molleo_llm_mutation_vs_leaf_llm_random": {
+      "method_a": "molleo_llm_mutation",
+      "method_b": "leaf_llm",
+      "split": "random",
+      "n_seeds": 8,
+      "median_diff": 23.6352763748961,
+      "ci_low": 3.775402496602368,
+      "ci_high": 45.34713281935538,
+      "wilcoxon_p": 0.0234375,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        96.8756572800642,
+        100.05446608536326,
+        135.4630105785045,
+        104.55445219610846,
+        135.46301027121717,
+        191.08081438921423,
+        135.4630105785045,
+        173.74400136182314
+      ],
+      "hv_b_per_seed": [
+        100.77904969950609,
+        87.46787390728214,
+        100.77904969950609,
+        100.77904969950609,
+        100.77904969950609,
+        100.77904969950609,
+        128.39686857111207,
+        128.39686854246776
+      ]
+    },
+    "molleo_vs_leaf_llm_scaffold_cold": {
+      "method_a": "molleo",
+      "method_b": "leaf_llm",
+      "split": "scaffold_cold",
+      "n_seeds": 8,
+      "median_diff": 103.04077369286728,
+      "ci_low": 43.858869908601164,
+      "ci_high": 133.54056149595002,
+      "wilcoxon_p": 0.0078125,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        188.73974934044023,
+        109.14910750162493,
+        203.8964677686893,
+        226.8178963576475,
+        221.69418308158322,
+        227.01279331072496,
+        135.4661403483643,
+        188.22033370642563
+      ],
+      "hv_b_per_seed": [
+        93.27733486169748,
+        94.58134009824832,
+        93.27733486169748,
+        93.27733486169748,
+        104.26669215313947,
+        93.27733486169748,
+        91.60727043976313,
+        93.27733486169748
+      ]
+    },
+    "molleo_v3scored_vs_leaf_llm_scaffold_cold": {
+      "method_a": "molleo_v3scored",
+      "method_b": "leaf_llm",
+      "split": "scaffold_cold",
+      "n_seeds": 8,
+      "median_diff": 88.13168864306368,
+      "ci_low": 25.298259341667773,
+      "ci_high": 122.39163839876383,
+      "wilcoxon_p": 0.0078125,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        168.61835390958146,
+        111.31504184886087,
+        118.57559420336526,
+        223.68903556731328,
+        226.6583305519033,
+        210.5903353375797,
+        175.72290918584503,
+        185.42507340174296
+      ],
+      "hv_b_per_seed": [
+        93.27733486169748,
+        94.58134009824832,
+        93.27733486169748,
+        93.27733486169748,
+        104.26669215313947,
+        93.27733486169748,
+        91.60727043976313,
+        93.27733486169748
+      ]
+    },
+    "molleo_llm_mutation_vs_leaf_llm_scaffold_cold": {
+      "method_a": "molleo_llm_mutation",
+      "method_b": "leaf_llm",
+      "split": "scaffold_cold",
+      "n_seeds": 8,
+      "median_diff": 15.980297748652013,
+      "ci_low": 0.7171617907024483,
+      "ci_high": 115.90787582341821,
+      "wilcoxon_p": 0.015625,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        92.58292504464607,
+        105.14233499337594,
+        135.4661403483643,
+        96.26876538606025,
+        125.66629275531588,
+        209.1852106851157,
+        92.32443223046558,
+        215.2111865711637
+      ],
+      "hv_b_per_seed": [
+        93.27733486169748,
+        94.58134009824832,
+        93.27733486169748,
+        93.27733486169748,
+        104.26669215313947,
+        93.27733486169748,
+        91.60727043976313,
+        93.27733486169748
+      ]
+    },
+    "molleo_vs_leaf_llm_chemotype_cold": {
+      "method_a": "molleo",
+      "method_b": "leaf_llm",
+      "split": "chemotype_cold",
+      "n_seeds": 8,
+      "median_diff": 43.848808535295326,
+      "ci_low": 38.791785668831864,
+      "ci_high": 81.19955888990336,
+      "wilcoxon_p": 0.0078125,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        131.0648875264257,
+        114.61124652318742,
+        126.8176631022916,
+        133.59445597319055,
+        133.05380572995116,
+        166.74783946058548,
+        124.34006623951399,
+        181.96617468317848
+      ],
+      "hv_b_per_seed": [
+        88.7953777952331,
+        91.25663079722806,
+        76.16057064634695,
+        88.16634863379251,
+        91.22446752241615,
+        85.54828057068212,
+        85.54828057068212,
+        84.36472495179471
+      ]
+    },
+    "molleo_v3scored_vs_leaf_llm_chemotype_cold": {
+      "method_a": "molleo_v3scored",
+      "method_b": "leaf_llm",
+      "split": "chemotype_cold",
+      "n_seeds": 8,
+      "median_diff": 38.22549349087731,
+      "ci_low": 26.659991855816628,
+      "ci_high": 70.9714109881234,
+      "wilcoxon_p": 0.0078125,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        131.0648875264257,
+        117.91662265304468,
+        87.33662332020756,
+        133.59445597319055,
+        125.40594477297816,
+        166.74783946058548,
+        115.95268875527428,
+        155.3361359399181
+      ],
+      "hv_b_per_seed": [
+        88.7953777952331,
+        91.25663079722806,
+        76.16057064634695,
+        88.16634863379251,
+        91.22446752241615,
+        85.54828057068212,
+        85.54828057068212,
+        84.36472495179471
+      ]
+    },
+    "molleo_llm_mutation_vs_leaf_llm_chemotype_cold": {
+      "method_a": "molleo_llm_mutation",
+      "method_b": "leaf_llm",
+      "split": "chemotype_cold",
+      "n_seeds": 8,
+      "median_diff": 17.131776251100824,
+      "ci_low": 4.5624598080218846,
+      "ci_high": 76.05844034250458,
+      "wilcoxon_p": 0.015625,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        93.35783760325498,
+        97.76323567159159,
+        91.76710167902152,
+        88.16634849588043,
+        129.70619347306388,
+        161.6067209131867,
+        104.2053020402092,
+        185.33263240752575
+      ],
+      "hv_b_per_seed": [
+        88.7953777952331,
+        91.25663079722806,
+        76.16057064634695,
+        88.16634863379251,
+        91.22446752241615,
+        85.54828057068212,
+        85.54828057068212,
+        84.36472495179471
+      ]
+    },
+    "molleo_v3scored_vs_molleo_random": {
+      "method_a": "molleo_v3scored",
+      "method_b": "molleo",
+      "split": "random",
+      "n_seeds": 8,
+      "median_diff": 7.74409159021161e-09,
+      "ci_low": -3.287511390892007,
+      "ci_high": 4.859019132737643,
+      "wilcoxon_p": 0.7353166906373405,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        234.13145766901283,
+        111.56935451102729,
+        157.2532327636078,
+        135.8426072620171,
+        253.90424015039204,
+        202.02944815846476,
+        222.76730796253685,
+        163.55139098319523
+      ],
+      "hv_b_per_seed": [
+        229.2724385362752,
+        96.7575643664953,
+        160.5407441544998,
+        137.37125637031255,
+        253.90424013490386,
+        198.98000038309053,
+        222.76730796253685,
+        173.1139868072654
+      ]
+    },
+    "molleo_llm_mutation_vs_molleo_random": {
+      "method_a": "molleo_llm_mutation",
+      "method_b": "molleo",
+      "split": "random",
+      "n_seeds": 8,
+      "median_diff": -28.947268875099695,
+      "ci_low": -118.44122986368669,
+      "ci_high": -2.301142137504172,
+      "wilcoxon_p": 0.0390625,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        96.8756572800642,
+        100.05446608536326,
+        135.4630105785045,
+        104.55445219610846,
+        135.46301027121717,
+        191.08081438921423,
+        135.4630105785045,
+        173.74400136182314
+      ],
+      "hv_b_per_seed": [
+        229.2724385362752,
+        96.7575643664953,
+        160.5407441544998,
+        137.37125637031255,
+        253.90424013490386,
+        198.98000038309053,
+        222.76730796253685,
+        173.1139868072654
+      ]
+    },
+    "molleo_v3scored_vs_molleo_scaffold_cold": {
+      "method_a": "molleo_v3scored",
+      "method_b": "molleo",
+      "split": "scaffold_cold",
+      "n_seeds": 8,
+      "median_diff": -2.962060547508443,
+      "ci_low": -20.12139543085877,
+      "ci_high": 4.964147470320086,
+      "wilcoxon_p": 0.4609375,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        168.61835390958146,
+        111.31504184886087,
+        118.57559420336526,
+        223.68903556731328,
+        226.6583305519033,
+        210.5903353375797,
+        175.72290918584503,
+        185.42507340174296
+      ],
+      "hv_b_per_seed": [
+        188.73974934044023,
+        109.14910750162493,
+        203.8964677686893,
+        226.8178963576475,
+        221.69418308158322,
+        227.01279331072496,
+        135.4661403483643,
+        188.22033370642563
+      ]
+    },
+    "molleo_llm_mutation_vs_molleo_scaffold_cold": {
+      "method_a": "molleo_llm_mutation",
+      "method_b": "molleo",
+      "split": "scaffold_cold",
+      "n_seeds": 8,
+      "median_diff": -55.78601776911186,
+      "ci_low": -96.15682429579415,
+      "ci_high": -4.006772508248986,
+      "wilcoxon_p": 0.0390625,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        92.58292504464607,
+        105.14233499337594,
+        135.4661403483643,
+        96.26876538606025,
+        125.66629275531588,
+        209.1852106851157,
+        92.32443223046558,
+        215.2111865711637
+      ],
+      "hv_b_per_seed": [
+        188.73974934044023,
+        109.14910750162493,
+        203.8964677686893,
+        226.8178963576475,
+        221.69418308158322,
+        227.01279331072496,
+        135.4661403483643,
+        188.22033370642563
+      ]
+    },
+    "molleo_v3scored_vs_molleo_chemotype_cold": {
+      "method_a": "molleo_v3scored",
+      "method_b": "molleo",
+      "split": "chemotype_cold",
+      "n_seeds": 8,
+      "median_diff": -3.8239304784865027,
+      "ci_low": -26.63003874326037,
+      "ci_high": 0.0,
+      "wilcoxon_p": 0.07961580146011343,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        131.0648875264257,
+        117.91662265304468,
+        87.33662332020756,
+        133.59445597319055,
+        125.40594477297816,
+        166.74783946058548,
+        115.95268875527428,
+        155.3361359399181
+      ],
+      "hv_b_per_seed": [
+        131.0648875264257,
+        114.61124652318742,
+        126.8176631022916,
+        133.59445597319055,
+        133.05380572995116,
+        166.74783946058548,
+        124.34006623951399,
+        181.96617468317848
+      ]
+    },
+    "molleo_llm_mutation_vs_molleo_chemotype_cold": {
+      "method_a": "molleo_llm_mutation",
+      "method_b": "molleo",
+      "split": "chemotype_cold",
+      "n_seeds": 8,
+      "median_diff": -18.491387525450307,
+      "ci_low": -37.70704992317073,
+      "ci_high": -3.347612256887288,
+      "wilcoxon_p": 0.0234375,
+      "wilcoxon_reliable": true,
+      "hv_a_per_seed": [
+        93.35783760325498,
+        97.76323567159159,
+        91.76710167902152,
+        88.16634849588043,
+        129.70619347306388,
+        161.6067209131867,
+        104.2053020402092,
+        185.33263240752575
+      ],
+      "hv_b_per_seed": [
+        131.0648875264257,
+        114.61124652318742,
+        126.8176631022916,
+        133.59445597319055,
+        133.05380572995116,
+        166.74783946058548,
+        124.34006623951399,
+        181.96617468317848
+      ]
+    }
+  },
+  "diagnostics": {
+    "leaf_llm_random": {
+      "frac_duplicate_of_archive": 0.7919354838709677,
+      "mean_min_edit_distance": 0.49354838709677423,
+      "frac_selected_duplicate_of_archive": 0.7924731182795698
+    },
+    "leaf_llm_scaffold_cold": {
+      "frac_duplicate_of_archive": 0.7885245901639343,
+      "mean_min_edit_distance": 0.49672131147540993,
+      "frac_selected_duplicate_of_archive": 0.7650273224043714
+    },
+    "leaf_llm_chemotype_cold": {
+      "frac_duplicate_of_archive": 0.6818181818181817,
+      "mean_min_edit_distance": 0.6636363636363638,
+      "frac_selected_duplicate_of_archive": 0.6727272727272726
+    },
+    "molleo_random": {
+      "frac_duplicate_of_archive": 0.2984375,
+      "mean_min_edit_distance": 0.9765625,
+      "frac_selected_duplicate_of_archive": 0.275
+    },
+    "molleo_scaffold_cold": {
+      "frac_duplicate_of_archive": 0.2609375,
+      "mean_min_edit_distance": 1.01875,
+      "frac_selected_duplicate_of_archive": 0.22812500000000002
+    },
+    "molleo_chemotype_cold": {
+      "frac_duplicate_of_archive": 0.225,
+      "mean_min_edit_distance": 1.0593750000000002,
+      "frac_selected_duplicate_of_archive": 0.21250000000000002
+    },
+    "molleo_v3scored_random": {
+      "frac_duplicate_of_archive": 0.25,
+      "mean_min_edit_distance": 1.0375,
+      "frac_selected_duplicate_of_archive": 0.228125
+    },
+    "molleo_v3scored_scaffold_cold": {
+      "frac_duplicate_of_archive": 0.1859375,
+      "mean_min_edit_distance": 1.109375,
+      "frac_selected_duplicate_of_archive": 0.159375
+    },
+    "molleo_v3scored_chemotype_cold": {
+      "frac_duplicate_of_archive": 0.26718749999999997,
+      "mean_min_edit_distance": 1.0046875,
+      "frac_selected_duplicate_of_archive": 0.28750000000000003
+    },
+    "molleo_llm_mutation_random": {
+      "frac_duplicate_of_archive": 0.4578125,
+      "mean_min_edit_distance": 1.0265625,
+      "frac_selected_duplicate_of_archive": 0.49375
+    },
+    "molleo_llm_mutation_scaffold_cold": {
+      "frac_duplicate_of_archive": 0.4453125,
+      "mean_min_edit_distance": 1.0265625,
+      "frac_selected_duplicate_of_archive": 0.48750000000000004
+    },
+    "molleo_llm_mutation_chemotype_cold": {
+      "frac_duplicate_of_archive": 0.41874999999999996,
+      "mean_min_edit_distance": 1.0875000000000001,
+      "frac_selected_duplicate_of_archive": 0.45625000000000004
+    }
+  }
+}

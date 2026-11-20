@@ -1,0 +1,10 @@
+{
+  "experiment": "e4",
+  "method": "leaf_ablation_e",
+  "split": "random",
+  "seed": 3,
+  "final_hypervolume": 240.88866550247678,
+  "total_queries_issued": 400,
+  "n_rounds": 40,
+  "hypothesis_precision": NaN
+}

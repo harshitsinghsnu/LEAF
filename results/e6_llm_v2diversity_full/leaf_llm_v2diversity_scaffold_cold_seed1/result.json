@@ -1,0 +1,11 @@
+{
+  "experiment": "e6_llm_v2diversity_full",
+  "method": "leaf_llm_v2diversity",
+  "split": "scaffold_cold",
+  "seed": 1,
+  "final_hypervolume": 135.11564223277205,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "proposer_reject_rate": 0.0125,
+  "hypothesis_precision": NaN
+}

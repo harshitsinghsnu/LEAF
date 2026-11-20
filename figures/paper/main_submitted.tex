@@ -1,0 +1,321 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs,tabularx}
+\usepackage{algorithm,algpseudocode}
+\usepackage{microtype}
+\usepackage{fvextra}
+\usepackage{seqsplit}
+\usepackage[round,authoryear]{natbib}
+\usepackage{authblk}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue,
+  pdfauthor={}, pdftitle={Do LLM Proposers Improve Budgeted Lipid Search?}}
+
+% Keep floats close to their discussion and give large figures enough room at
+% the top or bottom of a text page.  The default settings deferred several
+% figures until the end of the main text.
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.80}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
+\setlength{\textfloatsep}{12pt plus 3pt minus 4pt}
+\setlength{\floatsep}{10pt plus 3pt minus 3pt}
+\setlength{\intextsep}{10pt plus 3pt minus 3pt}
+
+\title{Do LLM Proposers Improve Budgeted Search for Ionizable Lipids?}
+\author[1]{Harshit Singh}
+\author[1]{Rajeev Kumar Singh}
+\author[1]{Chundru Sharath Krishna}
+\author[1]{Satya Pratik Srivastava}
+\author[2]{Rohan Gorantla}
+\affil[1]{Department of Computer Science and Engineering, Shiv Nadar University, Delhi-NCR, India}
+\affil[2]{School of Informatics, University of Edinburgh, Edinburgh EH8 9AB, U.K.}
+\affil[3]{EaStCHEM School of Chemistry, University of Edinburgh, Edinburgh EH9 3FJ, U.K.}
+\date{}
+
+\begin{document}
+\maketitle
+\begin{center}
+\small\textit{Corresponding authors: rajeev.kumar@snu.edu.in; gorantlarohan@gmail.com
+}
+\end{center}
+
+\begin{abstract}
+Efficient lipid design under limited experimental budgets is a central challenge in computational chemistry and drug discovery. We introduce LEAF (Lipid Evolutionary Adaptive Framework), a matched-budget protocol for testing whether language-model proposers improve combinatorial molecular search relative to classical baselines. The study uses a 30,044-candidate ionizable-lipid space, a frozen Gaussian-process oracle fitted to experimental potency labels, and a separate active-learning surrogate. Four language models evaluated over eight seeds and three splits show no significant improvement over genetic-algorithm or random-search baselines. For Llama 8B, 79.1\% of acquisition-selected queries repeat previously evaluated archive members. Removing duplicates reduces the performance gap on some splits but increases proposal cost and can prevent budget exhaustion. Larger models reduce duplication without establishing superiority or equivalence. Exploratory scored prompts and stricter novelty controls yield positive median differences against the genetic algorithm, yet wide intervals and shared-seed dependence preclude stronger conclusions. A validated single-assay reanalysis preserves the chemotype-cold deficit at a smaller numerical scale, and exploratory expected hypervolume improvement does not reverse the result. Follow-up checks address whether proposers genuinely use injected evidence. These checks include a zero-shot leakage probe, rank-only and chain-of-thought-rationale prompts, a score-shuffle perturbation, an evidence-conflict probe, and a genuine reasoning-mode proposer. They show measurable engagement with supplied information without a corresponding performance gain. LEAF isolates proposal quality as the experimental variable and documents a concrete failure mode of zero-shot LLM proposers under controlled budgets.
+\end{abstract}
+
+\section{Introduction and related work}
+\label{sec:introduction}
+Ionizable lipids influence lipid nanoparticle (LNP) delivery efficiency, while established synthetic routes support combinatorial variation of head groups, linkers, and tails \citep{xu2023ugi}. Experimental evaluation is expensive, so practical design reduces to a budgeted search problem: only a small number of candidates can be tested, and the method used to propose those candidates directly affects the quality of the lipids that are found. We introduce LEAF (Lipid Evolutionary Adaptive Framework), a matched-budget protocol that isolates the contribution of language-model proposers under identical evaluation oracles, acquisition functions, and query budgets. This design isolates proposal quality from evaluation and selection. Well-characterized combinatorial objectives offer limited scope for long-horizon reasoning or heterogeneous evidence integration, potential benefits under sparse supervision, literature-grounded objectives, or multistep synthesis remain untested.
+
+Ugi three-component-reaction libraries and AGILE's supervised screening pipeline provide established approaches \citep{xu2023ugi,xu2024agile}, alongside synthesizable-lipid generative modeling \citep{zhu2024generative}. LipoAgent coordinates fine-tuned TxGemma and Qwen prediction and verification agents, including toxicity-conditioned efficiency prediction rather than budget matched search \citep{li2025lipoagent}. LUMI-lab integrates foundation models with robotic active learning, screens in vitro, and validates candidates in vivo \citep{lumilab2026}, but does not compare proposal mechanisms under identical budgets.
+The Virtual Lab, ProtAgents, protein-design swarms, and AI co-scientist study collaborative biomolecular reasoning \citep{swanson2025virtuallab,protagents2025,swarmdesign2025,gottweis2026}. ChemCrow and Coscientist demonstrate chemistry-tool use \citep{bran2023chemcrow,boiko2023coscientist}, ToolMol motivates tool-scored crossover and mutation \citep{toolmol2026}. LEAF combines this proposal pattern with Gaussian-process (GP) active learning and a continuous Tanimoto kernel \citep{gessner2024,srinivas2009,rasmussen2006,settles2012}. Generated lipids require a generalizing evaluation oracle distinct from the acquisition surrogate. Batch expected hypervolume improvement (EHVI), conditional generative multi-objective Bayesian optimization, and LLM-derived evolutionary operators within multi-objective evolutionary algorithms are complementary approaches not evaluated here.
+Related studies benchmark surrogate models, acquisition policies, and batch sizes for ligand screening \citep{gorantla2024benchmarking} and combine GP active learning with fragment-level SHAP explanations \citep{srivastava2026explainable}. For protein interactions, fine-tuned protein language models support explainable affinity prediction \citep{singh2026explainable}, while chain-aware modeling represents antibody heavy chains, light chains, and antigens separately \citep{singh2026antibody}. These studies inform surrogate evaluation and interpretability but do not test LLM lipid proposals under matched oracle budgets. A concurrent diagnostic framework for biological reasoning models introduces perturbation and evidence-conflict tests to separate genuine input use from pattern completion \citep{fang2026bioreasoninputs}. Section~\ref{sec:evidence} adapts both tests to the proposer setting.
+
+LEAF provides a matched-budget protocol with a pre-committed interpretation of null results. It evaluates four language-model proposers against genetic-algorithm, random-search, and bandit baselines, quantifies duplicate-driven query waste, tests prompt and novelty interventions, and audits implementation errors that can generate false positives. Secondary components produced no usable signal under the conditions examined. Any interpretability benefit remains qualitative rather than experimentally demonstrated.
+\section{Method and experimental protocol}
+\label{sec:method}
+\subsection{Search space, objectives, and oracles}
+\label{sec:objectives}
+The general representation $x=(h,\ell,t_1,t_2,u,b)\in\mathcal X$ indexes a head group, linker, two tails, unsaturation, and halogenation. The implemented Ugi assembler instead uses amine, aldehyde, and isocyanide slots $(A,B,C)$ and Morgan fingerprints. The general specification is
+\begin{equation}
+ f(x)=\bigl(f_{\mathrm{pot}}(x),-f_{\mathrm{tox}}(x)\bigr),\qquad
+ f_{\mathrm{aug}}(x)=\bigl(f_{\mathrm{pot}}(x),-f_{\mathrm{tox}}(x),f_{\mathrm{syn}}(x)\bigr).
+ \label{eq:objectives}
+\end{equation}
+The synthesizability axis requires non-negligible variance, nearly constant route validity cannot meaningfully enlarge a frontier. Tropism heuristics are secondary filters, not objectives or evidence of organ selectivity.
+
+\textbf{Implemented objectives.} All two-objective experiments maximize the correlated AGILE HeLa and RAW264.7 transfection-potency readouts, with both signs $+1$. This specification covers the primary sweep, conventional baselines, bandit, prompt variants, de-duplication, hosted models, and EHVI. Each GP head uses internal target normalization fitted on its split's training data, the fixed hypervolume reference is $(-5.0,-5.0)$. A deterministic toxicophore rule screens the Verifier pool only. The HeLa-only chemotype-cold reanalysis is the explicit exception: it maximizes one readout with reference $(-5.0)$. Thus reported hypervolume measures potency, not a trade-off involving toxicity or synthesizability. Comparisons require matched budgets and objective definitions, a common reference alone does not remove differences in split-specific oracle fits or normalization.
+
+The frozen evaluation oracle $\mathcal O_{\mathrm{GT}}$ represents laboratory feedback in retrospective simulation. It is fitted only on each split's training partition and must extrapolate to assembled lipids absent from the labeled library. A full-data fit would erase the intended split distinction. The separate active-learning surrogate $\mathcal O_{\mathrm{AL}}$ uses the same GP architecture but is refitted each round on acquired labels. Its posterior drives acquisition, attribution, and verification without query charges, generating its own training targets would add no information. This remains model-on-model evaluation.
+
+\begin{figure}[!tb]
+\centering
+\includegraphics[width=\linewidth]{Figure1_architecture.pdf}
+\caption{LEAF search loop under a shared oracle-query budget. Only the proposer varies across LLM, static-GA, random, and Thompson-bandit methods. Each round produces $m=10$ reagent triples $(A,B,C)$ from 30,044 Ugi-3CR lipids. The Tanimoto-GP surrogate $\mathcal O_{\mathrm{AL}}$ scores candidates, an RDKit rule filters them, and UCB with $\beta=2$ selects $|C_t|\le5$ for evaluation by the frozen oracle $\mathcal O_{\mathrm{GT}}$, fitted on the AGILE training split to predict HeLa and RAW264.7 potency. Acquired labels update $D_t$ and Pareto archive $A_t$, supporting surrogate refitting and subsequent proposals. The dashed pathway depicts counterfactual hypothesis testing and Ledger feedback. Gold arrows denote oracle calls, including counterfactual evaluations, charged to the shared budget $B=40$. Algorithm~\ref{alg:leaf} specifies the accounting. The prompt-variant and reasoning-mode evidence-use checks (Section~\ref{sec:evidence}) run through this same budgeted loop with the Proposer box altered only in its input content or inference mode. The leakage probe and evidence-conflict probe are standalone diagnostics evaluated outside this loop and are not charged to $B$.}
+\label{fig:architecture}
+\end{figure}
+
+\subsection{Proposal, acquisition, and secondary operators}
+At round $t$, the proposer receives Pareto archive $A_{t-1}$, the reagent vocabulary, and Hypothesis Ledger $H_{t-1}$. Each schema-constrained call returns one crossover or single-fragment mutation candidate. Exact vocabulary checks and rejection rates distinguish model output from fallback. The surrogate scores pool $P_t$ without oracle charges, after verification, scalarized multi-objective upper confidence bound (UCB), with $\beta=2$, selects up to $q$ candidates. All methods share this acquisition and query accounting. Random search denotes uniform random proposals, not unselected queries. The design permits $m=|P_t|\gg q$, primary experiments use $m=10$, $q=5$.  Appendix~\ref{app:baselines} specifies operators and duplicate handling, Appendix~\ref{app:llm-repro} gives prompts and inference settings.
+
+The proposed Verifier aggregates independently prompted toxicologists from at least two base models using split conformal prediction \citep{angelopoulos2023}. Intervals crossing the decision threshold trigger abstention. Adaptive sampling motivates round-wise weighted or Mondrian recalibration and empirical coverage monitoring, not guaranteed exchangeabilit, agreement above 95\% flags insufficient diversity. No AGILE toxicity assay supports a learned head in the reported runs. Calibration scores equal deterministic RDKit labels, yielding zero-width intervals and identical decisions. These runs do not exercise epistemic debate.
+
+Every $k$ rounds, literature passages and Integrated Gradients or KernelSHAP attributions motivate structure-property hypotheses \citep{sundararajan2017,lundberg2017}. Validation requires a minimum number of matched counterfactual pairs and a paired Wilcoxon test, with every pair query charged to $B$ through $\mathcal O_{\mathrm{GT}}$. A bare-LLM leakage probe must precede any claimed rediscovery of the brominated-tail potency association, detected prior knowledge permits only a consistency check. No halogenated reagents occur in the real vocabulary, so this test was not run. The Ledger remained empty in the reported sweep. Secondary components are therefore specified architectural extensions, not empirically active mechanisms, Appendix~\ref{app:agents} gives their full scope.
+
+\begin{algorithm}[t]
+\caption{Budget-accounted LEAF round}
+\label{alg:leaf}
+\begin{algorithmic}[1]
+\Require Archive $A_{t-1}$, ledger $H_{t-1}$, acquired data $D_{t-1}$, remaining budget $B_t$, frozen $\mathcal O_{\mathrm{GT}}$, surrogate $\mathcal O_{\mathrm{AL}}$
+\State $P_t\gets\mathrm{Proposer}(A_{t-1},H_{t-1},\mathcal X)$
+\State Optionally remove exact archive duplicates from $P_t$ (all methods)
+\State $\hat f\gets\mathcal O_{\mathrm{AL}}.\mathrm{posterior}(P_t)$
+\State $P_t'\gets\mathrm{VerifierSurvivors}(P_t,\hat f)$
+\State $C_t\gets\mathrm{Acquisition}(P_t',\hat f,\min(q,B_t,|P_t'|))$
+\State $D_t\gets D_{t-1}\cup\{(x,\mathcal O_{\mathrm{GT}}(x)):x\in C_t\}$
+\State $B_t\gets B_t-|C_t|$
+\State Refit $\mathcal O_{\mathrm{AL}}$ on $D_t$
+\State $A_t\gets\mathrm{NonDominatedSort}(D_t)$
+\State $H_t\gets H_{t-1}$
+\If{$t\bmod k=0$ and budget permits the minimum complete pair set}
+\State Construct matched counterfactual query set $Q_t$ with $|Q_t|\le B_t$
+\State $y_t\gets\mathcal O_{\mathrm{GT}}.\mathrm{query}(Q_t)$
+\State $B_t\gets B_t-|Q_t|$
+\State $H_t\gets\mathrm{HypothesisTest}(A_t,H_{t-1},Q_t,y_t,\text{attributions},\text{literature})$
+\EndIf
+\State \Return $A_t,H_t,D_t,B_t$
+\State Repeat while budget remains
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Data, controls, and statistical analysis}
+\label{sec:protocol}
+AGILE labels cover a complete $20\times12\times5=1{,}200$-lipid factorial design. Inverting its 12,276-candidate virtual library recovers all reagent triples and adds 9 amines, 62 aldehydes, and 9 isocyanides, yielding $29\times74\times14=30{,}044$ combinations. Decomposition reproduces all labeled lipids, and full-space RDKit round-trip validation succeeds. The remaining 28,844 molecules require oracle extrapolation. At $B=80$, only about 0.27\% of this space can be queried. Preliminary experiments also use the original library to assess saturation. A broader data plan includes roughly 1,080 Ugi lipids, within-source rank normalization, source indicators for assay harmonization, and checksum logging. 
+
+Random, scaffold-cold, and chemotype-cold splits probe increasing extrapolation. Each uses 960 training and 240 test molecules, the split-generation seed is zero. A held-out Spearman correlation $\rho\ge0.3$ is the validity gate for each readout. The primary LLM protocol uses eight paired seeds per split, $B=40$, $m=10$, $q=5$, temperature 0.7, and 80 proposal calls. Static-GA, random search, and a non-evolutionary Thompson bandit share the vocabulary, oracle, acquisition, and budget. The bandit refits per-fragment Beta posteriors from the Pareto archive each round. Ablations compare proposal and acquisition alone, Verifier addition, full LEAF, disabled Ledger feedback, and replacement of debate with a binary filter. LipoAgent-related evaluation is restricted to a separate prediction task.
+
+The primary statistic is median paired hypervolume difference, with a 95\% percentile bootstrap confidence interval from 10,000 resamples and random seed zero. Two-sided Wilcoxon tests are secondary. Minimum exact $p$-values are 0.25, 0.125, and 0.0078125 for $n=3$, 4, and 8, eight seeds permit significance but do not guarantee adequate power. The primary multiplicity family comprises four models against two baselines on the random split, with Holm correction. All other comparisons are secondary or exploratory, their displayed $p$-values are unadjusted. Post hoc equivalence tests use a margin of 10\% of the baseline median. Full-space normalized hypervolume is defined in Appendix~\ref{app:normalized-hv}. 
+
+Hypotheses H1 predicts higher hypervolume than both baselines, especially on chemotype-cold splits. H2 predicts improved sample efficiency from Ledger feedback, H3 predicts lower false acceptance at matched coverage from recalibrated debate, H4 predicts leakage-conditional rediscovery of the brominated-tail association. An H1 null was internally pre-committed to mean no measured design-efficiency benefit. 
+
+\section{Results and mechanism analysis}
+\label{sec:results}
+\subsection{Oracle validity and zero-shot prediction}
+\label{sec:validity}
+Held-out HeLa correlations are 0.68, 0.66, and 0.49 on random, scaffold-cold, and chemotype-cold splits, respectively, all above the validity gate. RAW264.7 is weaker and fails on chemotype-cold with $\rho=0.23$, AGILE contains no toxicity assay. Figure~\ref{fig:performance}A supports controlled oracle comparisons, not biological accuracy for every extrapolated molecule.
+
+\textbf{Validated chemotype-cold endpoint.} Repeating the primary Llama 8B protocol with HeLa alone gives median differences of $-3.93$ against both baselines, each with $p=0.015625$. Baseline hypervolumes are identical across all eight paired seeds under this metric. The two-objective differences of $-31.2$ and $-46.3$ remain diagnostic, but the single validated assay provides the interpretable endpoint. Its roughly 28\% deficit relative to a reference hypervolume near 14 preserves the direction at a smaller numerical scale, absolute one- and two-objective hypervolumes are not directly comparable. Appendix~\ref{app:helaonly} retains per-seed values.
+
+A separate control asks Qwen3-8B, a base model used by LipoAgent, to score efficiency from 1 to 10 at temperature zero without labels. On 50 held-out random-split lipids, rejection is zero and potency correlation is negligible: $\rho=0.014$, $p=0.92$, versus the reported fitted-oracle correlation of 0.68 on the matched molecules. This does not replicate LipoAgent's fine-tuning, toxicity conditioning, prompts, TxGemma component, or ensemble and cannot refute the complete system.
+
+\subsection{Matched-budget proposal comparisons}
+\label{sec:comparisons}
+\begin{table}[!htbp]
+\caption{Eight-seed proposal comparisons. Each cell reports the median paired hypervolume difference from baseline, with the unadjusted two-sided Wilcoxon $p$-value in parentheses. GA denotes static-GA, RS denotes random search. Chemotype-cold two-objective results are diagnostic because one assay fails validation. Exact diversity-prompt tests use the same per-seed results as the other comparisons.}
+\label{tab:summary}
+\centering
+\begin{tabular}{@{}llccc@{}}
+\toprule
+Method & Baseline & Random & Scaffold-cold & Chemotype-cold \\
+\midrule
+Llama 3.1 8B & GA & $-47.1$ ($0.055$) & $-24.8$ ($0.078$) & $-31.2$ ($0.039$) \\
+ & RS & $-42.0$ ($0.0078$) & $-28.8$ ($0.039$) & $-46.3$ ($0.016$) \\
+Qwen2.5 7B & GA & $-40.9$ ($0.078$) & $-21.6$ ($0.109$) & $-29.2$ ($0.016$) \\
+ & RS & $-29.1$ ($0.016$) & $-34.3$ ($0.195$) & $-43.4$ ($0.023$) \\
+Qwen2.5 14B & GA & $+1.8$ ($0.742$) & $+18.3$ ($0.313$) & $-55.1$ ($0.0078$) \\
+ & RS & $-4.3$ ($0.742$) & $+33.9$ ($0.250$) & $-77.0$ ($0.0078$) \\
+Gemini Flash-Lite & GA & $-91.8$ ($0.0078$) & $-66.6$ ($0.0078$) & $-24.8$ ($0.0078$) \\
+ & RS & $-85.5$ ($0.0078$) & $-71.1$ ($0.0078$) & $-60.2$ ($0.0078$) \\
+Diversity prompt & GA & $-32.5$ ($0.078$) & $-15.6$ ($0.148$) & $-10.1$ ($0.25$) \\
+ & RS & $-25.4$ ($0.016$) & $-18.0$ ($0.0078$) & $-31.5$ ($0.078$) \\
+Thompson bandit & GA & $-16.2$ ($0.742$) & $+5.9$ ($0.945$) & $-18.0$ ($0.028$) \\
+ & RS & $+0.9$ ($0.844$) & $+3.4$ ($1.000$) & $-35.2$ ($0.039$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+An archive-guided rule-based stand-in is not an LLM. At $B=400$ on 1,200 candidates, random search nearly exhausts the frontier, with zero chemotype-cold hypervolume standard deviation and all split-wise $p\ge0.17$. After correcting two implementation errors, reducing $B$ to 80 yields stand-in differences from GA of 5.5, $-11.9$, and 0.4, with $p=0.95$, 0.20, and 0.74. Expanding to 30,044 candidates also gives no significant gain. The $p$-values are 1.0, 0.84, and 0.87 against GA and 0.74, 0.46, and 0.74 against random search. Thus saturation alone does not explain the negative results.
+
+\begin{figure}[!tb]
+\centering
+\includegraphics[width=\linewidth]{Figure2_leaf.pdf}
+\caption{Oracle validity, proposal value, and diversity. \textbf{A:} Held-out potency correlations across three splits, the dashed line marks $\rho=0.3$. Chemotype-cold RAW264.7 fails this gate. \textbf{B:} Random-split median paired hypervolume differences and 95\% bootstrap intervals for four models, each with $n=8$, asterisks mark unadjusted Wilcoxon $p<0.05$, and the dashed line marks zero. The only positive estimate is Qwen 14B against static-GA, $+1.8$, not random search, $-4.3$, neither is significant. \textbf{C,D:} Exact archive-duplicate proposal rates and minimum fragment-slot edit distances from 0 to 3. Aggregate duplicate rates are 71.5\%, 67.0\%, 3.5\%, and 32.3\% for Llama 8B, Qwen 7B, Qwen 14B, and Gemini, versus 22.5\% for GA and a measured 0\% for random search. Corresponding distances are 0.55, 0.63, 1.65, and 1.01, versus 1.52 and 2.81. Table~\ref{tab:original-4} separately reports the initial four-seed diagnostics.}
+\label{fig:performance}
+\end{figure}
+
+Table~\ref{tab:summary} preserves all split-wise medians and tests. Llama 8B and Qwen 7B have negative differences in all 12 comparisons, with four and three unadjusted significant tests, respectively. Qwen 14B, evaluated on a 16\,GB RTX A4000, shows no detectable difference from either baseline on random or scaffold-cold splits, but equivalence is also unestablished. Its chemotype-cold differences are $-55.1$ and $-77.0$, both $p=0.0078$, with hypervolume confined to 84.7-84.9 across eight seeds. Flat oracle responses are a plausible, unverified explanation in this weak-validity regime. Gemini Flash-Lite has negative differences against both baselines on all splits, each $p=0.0078$, with zero rejection.
+
+Across the 32 random-split model-seed pairs, 24 differences from GA are negative, with median $-38.7$, 27 differences from random search are negative, with median $-32.6$. These are descriptive summaries only. Shared seeds and baseline runs invalidate independence-based pooled bootstrap intervals and Wilcoxon inferenc, no pooled inferential claim is made.
+
+The Thompson bandit shows no detectable difference on random or scaffold-cold splits but is worse on chemotype-cold, indicating that cold-split difficulty is not exclusive to LLM reasoning. Groq-hosted Llama 3.3 70B has only three random-split seeds: hypervolumes 107.1, 116.2, and 116.2, versus GA's 182.1, 112.5, and 135.5 and random search's 139.1, 155.1, and 166.7. Median differences are $-19.3$, CI $[-75.0,3.7]$, and $-38.8$, CI $[-50.5,-32.0]$. These results are exploratory. Rejection is zero, duplication 7.1\%, and mean edit distance 1.76. Quota-driven vocabulary subsampling also differs from the primary prompts, limiting scale attribution.
+
+\subsection{Duplicate queries, novelty, and interventions}
+\label{sec:interventions}
+\textbf{Proposal pools and selected queries.} Initial four-seed diagnostics show archive duplication of 67.8\% for Llama 8B and 62.5\% for Qwen 7B, with edit distances 0.587 and 0.650, GA gives 22.5\% and 1.516, and random search 0\% and 2.812. Llama and Qwen label 99.7\% and 56.2\% of proposals as crossover. Baseline labels differ, so their zero crossover-label rate does not imply no recombination. One eight-candidate Llama pool repeats a triple six times. Direct instrumentation of Llama's 320 charged random-split queries across eight seeds finds 79.1\% exact archive duplicates, versus 15.3\% for GA and 0\% for random search. Acquisition therefore does not eliminate repetition. Known-good duplicates may inherit attractive surrogate means, although this mechanism is not separately established. Querying the first $q$ verified candidates without UCB gives no measurable improvement, implicating poor pool diversity as well as possible selection effects.
+
+\textbf{Applicability domain.} Among those Llama queries, 10.3\% contain no reagent unseen in oracle training, 88.75\% contain one, 0.9\% contain two, and none contain three. Mean unseen-slot counts are 0.91 for Llama, 1.58 for GA, and 1.81 for random search. Archive-anchored proposals therefore extrapolate less than full-vocabulary baselines, whose draws encounter many added aldehydes. Greater measured extrapolation does not explain Llama's deficit in this condition, these counts do not independently establish the cause. This accounting covers one model and split only.
+
+Qwen 14B has 4.2\% duplicates on random and scaffold-cold splits and 2.1\% on chemotype-cold, with edit distances 1.63 and 1.69. Gemini's split-wise rates are 43.1\%, 34.5\%, and 19.2\%, with distances 0.90, 0.98, and 1.14. Across 60 diagnosed runs, duplication and deficit are not significantly correlated, $\rho=-0.117$, $p=0.37$. Cross-model averages therefore do not establish a seed-level dose response, novel-candidate quality, acquisition, and oracle extrapolation remain relevant.
+
+\begin{figure}[!tb]
+\centering
+\includegraphics[width=\linewidth]{figure3_leaf.pdf}
+\caption{Learning dynamics, cost, and complete comparisons. \textbf{A:} Mean hypervolume with one standard deviation across eight random-split seeds, both baselines overtake Llama 8B within two to three rounds as its trajectory flattens. \textbf{B:} Log-scale nominal 80-call workload times, approximately 300-800 times the non-LLM cost, Table~\ref{tab:original-6} gives timings. \textbf{C:} The 60-run robustness check finds no significant association between duplication and deficit, $\rho=-0.12$, $p=0.37$. \textbf{D,E:} All 36 eight-seed comparisons across methods, splits, and baselines. Asterisks indicate unadjusted Wilcoxon $p<0.05$. Positive cells are non-significant. The diversity prompt and non-LLM Thompson bandit are included. }
+\label{fig:diagnostics}
+\end{figure}
+
+\textbf{Prompt and temperature controls.} Listing triples to avoid reduces duplication from 67.8\% to 34.0\% and increases edit distance from 0.59 to 1.06. Across eight seeds on each split, all six median differences remain negative, only the random and scaffold-cold comparisons against random search are significant before multiplicity correction. An exploratory four-seed temperature check gives 87.5\% duplication and identical hypervolume 106.4 at temperature 0.2. At temperature 1.0, duplication is 72.2\% and median hypervolume 126.3, versus 110.4 for matched default-temperature seeds. This does not establish monotonic improvement, duplication remains above the separate default diagnostic rate.
+
+\textbf{Archive de-duplication.} Removing exact current-archive matches before scoring, uniformly across methods and without backfill, improves a four-seed $B=15$ pilot from $-17.6$ to $-4.7$ against GA and from $-15.1$ to $+2.3$ against random search, all CIs cross zero. The $B=40$ replication and cold-split extensions are retained in Table~\ref{tab:dedup}. Random-split medians narrow without changing sign, and both unadjusted tests become non-significant. Its independent control differs from the primary run in magnitude, consistent with stochastic proposal variation, the GA comparison also crosses the significance threshold. Scaffold-cold narrows substantially, whereas chemotype-cold changes less, so duplication is not a uniform explanation. The eight-seed de-duplicated arm requires about ten hours. Seeds 4 and 7 stop after only 31 and 14 queries when repeated empty pools trigger the safety limit, all cold-split seeds spend $B=40$. Equal budget caps therefore do not imply equal realized query counts. De-duplication increases proposal cost and can prevent budget exhaustion, the pilot already required 2.3-7 times as many rounds.
+
+\begin{table}[!htbp]
+\caption{Matched archive de-duplication at $B=40$. Entries give median paired hypervolume differences against GA and random search, in that order. Random-split comparisons use $n=8$ seeds. Scaffold-cold and chemotype-cold are exploratory extensions at $n=4$. Two random-split de-duplication seeds do not exhaust the budget.}
+\label{tab:dedup}
+\centering
+\begin{tabular}{@{}lcll@{}}
+\toprule
+Split & $n$ & Control: GA, RS & De-duplicated: GA, RS \\
+\midrule
+Random & 8 & $-33.0,\ -38.7$ & $-21.9,\ -35.7$ \\
+Scaffold-cold & 4 & $-34.2,\ -40.0$ & $-5.1,\ -13.4$ \\
+Chemotype-cold & 4 & $-45.3,\ -75.1$ & $-35.0,\ -70.2$ \\
+\bottomrule
+\end{tabular}
+
+\end{table}
+
+\textbf{All-evaluated de-duplication.} Archive-only filtering permits repeat queries to dominated candidates and duplicate novel proposals within a pool. A stricter control removes both, again without backfill, subsequent rounds replenish the pool. On random-split seeds 0-3, it reverses the median against GA and reduces the random-search deficit by roughly 70\% (Table~\ref{tab:strict-dedup}). CIs remain wide and cross zero: $[-46.6,119.8]$ against GA and $[-32.2,77.2]$ against random search. This is directional evidence that novelty control matters, not superiority at $n=4$.
+
+\begin{table}[!htbp]
+\caption{All-evaluated de-duplication on four matched random-split seeds. Values are median paired hypervolume differences.}
+\label{tab:strict-dedup}
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Baseline & No de-duplication & All-evaluated de-duplication \\
+\midrule
+Static-GA & $-33.5$ & $+20.1$ \\
+Random search & $-52.5$ & $-15.4$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Objective-scored prompt.} The default prompt exposes fragment identities but neither potency values nor an explicit objective description. Adding both assay scores for sampled archive members and an instruction to maximize both objectives yields Table~\ref{tab:scored-prompt}. The GA median becomes positive and the random-search deficit narrows by about 38\%, CIs are $[-63.2,119.8]$ and $[-42.9,77.2]$, respectively. Seed 1 reaches hypervolume 232.263 in both this experiment and stricter de-duplication, agreeing to twelve significant figures despite distinct query trajectories. This rules out identical cached trajectories but makes the checks dependent through a shared starting seed and convergent endpoint. The two exploratory improvements are not independent replications. Combining scored prompts with novelty control and repeating at $n\ge8$ remain future work.
+
+\begin{table}[!htbp]
+\caption{Objective-scored prompting on four matched random-split seeds. Values are median paired hypervolume differences, both intervention intervals cross zero.}
+\label{tab:scored-prompt}
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Baseline & Default prompt & Objective-scored prompt \\
+\midrule
+Static-GA & $-33.5$ & $+13.9$ \\
+Random search & $-52.5$ & $-32.7$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Practical cost.} Candidate latencies are approximately 4.0, 10.3, 10.3, and 5.1 seconds for Llama 8B, Qwen 7B, Qwen 14B, and Gemini. Groq takes about 0.6 seconds of raw inference but is paced at seven seconds. Non-LLM methods require no LLM calls, the recorded non-LLM runs and GP rounds each take under one second. These workload-specific timings exclude quotas, retries, and multiday accumulation beyond nominal 80-call costs.
+
+\subsection{Does the proposer genuinely use injected evidence?}
+\label{sec:evidence}
+The objective-scored prompt (Table~\ref{tab:scored-prompt}) could improve either because the model exploits the injected potency values or because it already carries exploitable pretrained knowledge, or because any visible signal, true or not, shifts behavior without being used as intended. The following six checks triangulate this question. Appendix~\ref{app:leakage8b}--\ref{app:reasoning} give full per-seed data.
+
+\textbf{Leakage probe.} Llama 3.1 8B, asked to zero-shot score the same 50 held-out random-split lipids as the Qwen3-8B control (Section~\ref{sec:validity}) without labels, returns the identical score (8/10) for all 50 molecules at temperature zero, a degenerate constant output for which Spearman correlation is undefined. Repeating at temperature 0.7 breaks the degeneracy (three distinct emitted scores, 6-8) and gives $\rho=-0.006$, $p=0.96$, confirming the null is a genuine absence of exploitable pretrained signal rather than a greedy-decoding artifact, and consistent with Qwen3-8B's own near-zero $\rho=0.014$ control.
+
+\textbf{Rank-only prompt.} Replacing explicit potency and RAW264.7 magnitudes with ordinal rank 1-8 among the shown archive members, removing numeric values entirely, yields medians of $+17.2$ against GA and $-17.7$ against random search on four matched random-split seeds. This represents a larger GA-relative gain and a smaller random-search-relative deficit than the full-magnitude scored prompt (Table~\ref{tab:scored-prompt}). Ordinal information alone is therefore sufficient to recover, and on this metric exceed, the scored-prompt effect, which does not require exact numeric values. Both CIs cross zero at $n=4$.
+
+\textbf{Chain-of-thought rationale.} Requiring a one-to-two sentence structural rationale before each proposal, enforced by rejecting outputs lacking one, gives medians of $-6.4$ against GA and $-43.3$ against random search, within the range of the other prompt variants and not a qualitative improvement over the default prompt.
+
+\textbf{Score-shuffle perturbation.} Following \citet{fang2026bioreasoninputs}, real potency values are retained but randomly reassigned to the wrong fragments before display. Aggregate median differences ($+13.9$ GA, $-32.7$ RS) are essentially identical to the correctly labeled scored prompt (Table~\ref{tab:scored-prompt}: $+13.9$, $-32.7$). Per-query comparison against the matched correctly scored run shows this is not because the proposer ignores the (now-false) scores: 28, 8, 0, and 7 of 40 queries differ by seed, so three of four seeds have substantial real divergence while one seed's trajectory is fully identical. The narrow attainable Pareto frontier lets different query trajectories, including ones built on false score mappings, converge on the same endpoint hypervolume, so aggregate equivalence under shuffled scores does not by itself demonstrate that scores are ignored.
+
+\textbf{Evidence-conflict probe.} A fixed eight-member archive sample is shown with deliberately inverted rank labels (true best relabeled worst and vice versa) in a rank-only prompt, and 40 independent Llama 8B calls are scored for which archive member the proposal is nearest to by fragment edit distance. Repeating this with three independently drawn archive samples reveals the result is highly sample-dependent rather than a single stable behavior. Resolved calls following the falsely labeled-best member (the true worst) are 14.8\% (4/27 resolved), 84.2\% (32/38), and 46.2\% (6/13) across the three samples, with correspondingly variable tie/unresolved rates (13, 2, and 27 of 40 calls). One pattern is consistent across all three samples. The genuinely best member is almost never the nearest neighbor regardless of which label it carries, with 0, 3, and 0 resolved calls across the samples. The pooled rate is 3/78, or 3.8\%, versus a 12.5\% uniform base rate. Beyond that one robust null, a single fixed-archive run cannot characterize whether or how strongly the proposer follows a falsified quality label. The earlier characterization of this probe as showing "list-position dominance" was based on one sample and does not generalize. The only well-supported claim is that true quality is not what drives these proposals, not a specific alternative mechanism.
+
+\textbf{Genuine reasoning-mode proposer.} Enabling Qwen3-8B's native extended-thinking mode (not the prompted \mbox{v5\_cot} rationale) produces real multi-thousand-character reasoning traces under the default (unscored) prompt (mean length 5,669 characters, present in 155/160 calls) that never mention potency or the objective (0/155). Under the scored prompt, explicit engagement rises sharply to 124/160 traces (77.5\%) mentioning potency, with 152/160 containing a trace (mean length 6,877 characters). Median hypervolume differences are $-19.1$ against GA and $-53.4$ against random search on four seeds. These results are weaker than those for non-reasoning Llama 8B under the identical scored prompt (Table~\ref{tab:scored-prompt}), and the proposer is 5-=-10$\times$ slower per call. Genuine engagement with injected evidence is therefore dissociable from search performance.
+
+\begin{figure}[!tb]
+\centering
+\includegraphics[width=\linewidth]{fig4_evidence_panel.pdf}
+\caption{Evidence-use checks. \textbf{A:} Median paired hypervolume differences against GA and random search for each prompt variant ($n=4$, random split). CIs cross zero in all cases. \textbf{B:} Fraction of reasoning-mode traces mentioning potency under the default versus scored prompt (0/155 versus 124/160). The leakage probe uses a different metric (Spearman correlation, degenerate at temperature zero and near-zero at temperature 0.7) and is annotated separately rather than plotted as a bar on this axis. \textbf{C:} Evidence-conflict probe nearest-neighbor outcome across three independently drawn fixed archive samples (40 calls each). The genuinely best member is almost never the nearest neighbor in any sample, but whether the falsely labeled-best member is followed instead varies from 15\% to 84\% across samples. The probe's outcome is sample-dependent and not characterized by a single run. \textbf{D:} Per-seed count of queries differing from the matched correctly scored run under score-shuffle. Three of four seeds show real trajectory divergence despite similar aggregate hypervolume.}
+\label{fig:evidence}
+\end{figure}
+
+\subsection{Structural inspection: best-found lipids and fragment associations}
+\label{sec:structures}
+The preceding sections report only aggregate hypervolume. Figure~\ref{fig:structures}A shows what the search loop actually finds. For the objective-scored-prompt check's seed 1 (Section~\ref{sec:interventions}), we identify each method's single best-found candidate among its 40 queried triples, scored by the same frozen $\mathcal O_{\mathrm{GT}}$ used throughout, and render its real assembled structure. All three methods converge on branched tertiary-amine head groups and long aliphatic tails, the qualitative lipid-like shape AGILE's chemistry space is built to produce. Llama 8B's best candidate has the highest predicted sum (19.3 vs.\ 15.2 for random search and 11.5 for GA) on this one seed, consistent with that seed's favorable scored-prompt hypervolume (Table~\ref{tab:scored-prompt}) but not a general claim about structure quality across seeds.
+
+A separate, fully post-hoc diagnostic is explicitly independent of the Hypothesis Ledger, which this paper documents as empty in every search run where it was enabled (Section~\ref{sec:audit}). The diagnostic inspects what the frozen random-split $\mathcal O_{\mathrm{GT}}$ associates with higher predicted potency across the complete 30,044-candidate space, with no search, no budget charge, and no counterfactual-pair construction. Figure~\ref{fig:structures}B shows the five highest- and lowest-scoring values at each reagent slot by mean predicted HeLa+RAW264.7 across every candidate containing that value. The isocyanide slot (C) shows a narrow range (6.83-7.38) dominated by tail length, with the two mono-unsaturated tails scoring marginally highest. The aldehyde slot (B) shows the opposite relationship. Fully saturated, branched linkers score highest, and doubly unsaturated (diene) tails score lowest. This directly contradicts a simple "unsaturation improves potency" reading if that were inferred from slot C alone. The inconsistency across reaction positions is the main finding. It indicates that the oracle's fitted structure-potency relationship is specific to each slot's chemical context rather than a single interpretable rule. It also explains why this result is reported as a retrospective correlational inspection of the fitted surrogate rather than a validated structure-activity hypothesis or a replication of the Ledger's intended matched-pair statistical test. No halogenated reagents exist in this vocabulary, so this analysis cannot speak to the LUMI-lab brominated-tail association discussed in Appendix~\ref{app:agents}.
+
+\textbf{Domain-coverage boundary.} None of the three most widely used clinical ionizable lipids (MC3 [DLin-MC3-DMA], SM-102, and ALC-0315) decompose into this paper's Ugi-3CR vocabulary under the same retro-synthetic decomposition routine validated to exactly round-trip all 1,200 labeled AGILE lipids (Section~\ref{sec:protocol}, Appendix~\ref{app:structures}). This is expected because none are Ugi three-component-reaction products. It converts the planned but previously unreported Recall@$k$ comparison against these reference compounds (Section~\ref{sec:protocol}) into an explicit, disclosed boundary of this chemistry's coverage rather than a silently absent result. The search space studied here is disjoint from the clinically deployed lipid chemotypes. No claim in this paper about proposal quality should be read as bearing on recovery of, or comparison to, these specific compounds.
+
+\begin{figure}[!tb]
+\centering
+\includegraphics[width=\linewidth]{fig5_combined_panel.pdf}
+\caption{Real lipid structures and post-hoc fragment-importance diagnostic. \textbf{A:} 3D structure of each method's best-found lipid (by frozen-oracle predicted HeLa+RAW264.7) among its 40 queried candidates, objective-scored-prompt check, random split, seed 1. A/B/C triples are the exact reagent identities queried under the shared budget. Conformers are generated by RDKit ETKDG embedding with MMFF94 geometry optimization and rendered as ball-and-stick in PyMOL (open-source), run in an isolated environment so its dependencies do not affect the project's pinned numerical stack (Appendix~\ref{app:structures}). \textbf{B:} Post-hoc fragment-importance diagnostic over the full 30,044-candidate space under the frozen random-split oracle, independent of the (empty) Hypothesis Ledger: the five highest- and lowest-scoring fragment values at each reagent slot by mean predicted HeLa+RAW264.7 across every candidate containing that value, restricted to values appearing in at least 20 candidates. The opposite association with tail unsaturation at slots B and C indicates a slot-specific, non-generalizable relationship rather than a single interpretable structural rule.}
+\label{fig:structures}
+\end{figure}
+
+\subsection{Secondary-operator ablations and implementation audit}
+\label{sec:audit}
+Ledger and binary-filter ablations show no significant hypervolume change. At $B=80$, $m=40$, $q=8$, and $n=8$, disabling the Ledger on chemotype-cold or replacing verification with a binary filter on the random split yields results identical to full LEAF. The Ledger is empty in all 72 original sweep runs, comprising three methods, three splits, and eight seeds, hypothesis precision is undefined, not zero. A reproduced $B=40$, $q=5$, $k=4$ run has 12 Pareto members sharing an isocyanide different from the fixed pairing control. Archive-restricted matching prevents completed tests despite passing validation unit tests. Deterministic toxicity likewise makes debate and binary filtering equivalent, with undefined binary-filter coverage. These outcomes reflect the absence of usable signal under the tested conditions, not an evaluation of effective debate or hypothesis feedback.
+
+An early stand-in result gave a median GA advantage of 92.5, CI $[30.1,119.1]$, $p=0.0078$. Reusing a full-data oracle invalidated split distinctions, while GA's mutation probability 0.2 was unmatched to the stand-in's 50\% pure mutation. Correcting both erased the effect. A third error prevented EHVI dispatch, historical runs actually used UCB with the intended $\beta=2$. After correction, exploratory EHVI on four random-split seeds gives differences of $-23.5$ against GA and $-38.2$ against random search, similar in direction and magnitude to UCB. The exact four-seed test cannot attain $p<0.05$, an all-split $n\ge8$ EHVI sweep remains necessary.
+
+\section{Discussion, limitations, and conclusion}
+\label{sec:discussion}
+
+No tested configuration establishes an advantage for LLM proposers under matched query budgets. Small models waste a large fraction of evaluations on exact duplicates. Larger models reduce this repetition yet still fail to outperform genetic-algorithm or random-search baselines. Prompt and novelty interventions can shrink the gap, but only at higher proposal cost, so efficiency and latency must be judged together. Statistically, none of the eight primary comparisons survives Holm correction, and post-hoc equivalence tests at a 10 \% margin also fail. Non-significance therefore shows neither inferiority nor parity. Small samples, shared baselines, and model heterogeneity further limit formal claims.
+
+The study is model-on-model: search trajectories are scored by a frozen Gaussian-process oracle rather than wet-lab measurements, so results depend on the fidelity of that surrogate and on the particular lipid space examined. Chemotype-cold validity is weak, toxicity screening is purely rule-based, and the expanded 30,044-candidate library requires extrapolation. The Verifier is active in every reported configuration but is always degenerate in this dataset, since AGILE supplies no independent toxicity assay. Its conformal intervals have zero width, and its decisions reduce to a deterministic rule. It has not been exercised under genuine epistemic uncertainty. The Hypothesis Ledger is active in the primary sweep and early ablations, where it is measured empty across all 72 runs because the Pareto-restricted counterfactual-pair construction rarely finds a matched control. It is explicitly disabled in essentially every later follow-up experiment, including every check in Section~\ref{sec:evidence}, rather than silently inactive. Coverage is limited to four models, three splits, and a modest set of prompt and acquisition variants. Several follow-up checks remain under-powered, and access constraints on larger or domain-adapted models restrict broader comparison.
+
+Under controlled oracle access, identical acquisition functions, and matched budgets, the tested language-model proposers do not improve lipid search relative to classical baselines. The dominant inefficiency is duplicate-driven query waste, which lessens with scale but is not replaced by a performance gain. LEAF’s contribution is a reusable matched-budget evaluation protocol and a concrete diagnosis of where current zero-shot LLM proposers lose efficiency, not a claim about biological performance or the ultimate limits of LLM-driven methods more broadly.
+
+
+\section*{Data availability}
+The labeled AGILE dataset and its unlabeled virtual candidate library  originate from the AGILE platform's own repository at \url{https://github.com/bowang-lab/AGILE} \citep{xu2024agile}. 
+ 
+
+\section*{Code availability}
+All code used to run experiments, compute statistics, and generate figures is available at \url{https://github.com/harshitsinghsnu/LEAF}.
+
+\section*{Acknowledgments}
+Harshit Singh acknowledges the support of the Department of Computer Science and Engineering, Shiv Nadar University, Delhi-NCR, for providing the computational resources used in this work. Rohan Gorantla acknowledges the support and funding of United Kingdom Research and Innovation (grant EP/S02431X/1), the UKRI Centre for Doctoral Training in Biomedical AI at the School of Informatics, University of Edinburgh, and Exscientia Plc, Oxford.
+
+\label{main-text-end}
+\clearpage
+
+\input{references}
+
+\clearpage
+\appendix
+\input{supplement}
+\end{document}

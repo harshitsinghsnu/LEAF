@@ -1,0 +1,11 @@
+{
+  "experiment": "e4_shrunk",
+  "method": "leaf_full",
+  "split": "random",
+  "seed": 6,
+  "final_hypervolume": 238.929837055728,
+  "total_queries_issued": 80,
+  "n_rounds": 10,
+  "proposer_reject_rate": null,
+  "hypothesis_precision": NaN
+}

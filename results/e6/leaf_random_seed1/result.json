@@ -1,0 +1,10 @@
+{
+  "experiment": "e6",
+  "method": "leaf",
+  "split": "random",
+  "seed": 1,
+  "final_hypervolume": 251.08402649195753,
+  "total_queries_issued": 200,
+  "n_rounds": 20,
+  "hypothesis_precision": 0.0
+}

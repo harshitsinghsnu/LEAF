@@ -1,0 +1,10 @@
+{
+  "experiment": "e2",
+  "method": "static_ga",
+  "split": "chemotype_cold",
+  "seed": 1,
+  "final_hypervolume": 198.12337120616505,
+  "total_queries_issued": 80,
+  "n_rounds": 10,
+  "hypothesis_precision": NaN
+}

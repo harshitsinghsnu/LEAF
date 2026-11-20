@@ -1,0 +1,11 @@
+{
+  "experiment": "e2_llm_full",
+  "method": "molleo",
+  "split": "random",
+  "seed": 4,
+  "final_hypervolume": 253.90424013490386,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "proposer_reject_rate": 0.625,
+  "hypothesis_precision": NaN
+}

@@ -1,0 +1,11 @@
+{
+  "experiment": "e2_ehvi_check",
+  "method": "leaf_llm",
+  "split": "random",
+  "seed": 0,
+  "final_hypervolume": 100.77904969950609,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "proposer_reject_rate": 0.0,
+  "hypothesis_precision": NaN
+}

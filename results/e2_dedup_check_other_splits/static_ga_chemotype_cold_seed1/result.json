@@ -1,0 +1,14 @@
+{
+  "experiment": "e2_dedup_check_other_splits",
+  "method": "static_ga",
+  "split": "chemotype_cold",
+  "seed": 1,
+  "final_hypervolume": 116.7161237543832,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "proposer_reject_rate": null,
+  "hypothesis_precision": NaN,
+  "frac_selected_duplicate_of_archive_overall": 0.0,
+  "mean_n_unseen_fragment_values": 1.475,
+  "frac_queries_fully_out_of_domain": 0.05
+}

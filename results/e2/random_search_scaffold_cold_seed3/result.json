@@ -1,0 +1,10 @@
+{
+  "experiment": "e2",
+  "method": "random_search",
+  "split": "scaffold_cold",
+  "seed": 3,
+  "final_hypervolume": 175.7229088805821,
+  "total_queries_issued": 80,
+  "n_rounds": 10,
+  "hypothesis_precision": NaN
+}

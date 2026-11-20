@@ -1,0 +1,4 @@
+method,split,n_seeds,hv_mean,hv_std,hypothesis_precision_mean
+leaf,scaffold_cold,8,210.25655114773193,28.0549272691762,0.0
+static_ga,scaffold_cold,8,220.52260764230914,18.69256807924677,
+random_search,scaffold_cold,8,199.26015957838445,20.266678511577727,

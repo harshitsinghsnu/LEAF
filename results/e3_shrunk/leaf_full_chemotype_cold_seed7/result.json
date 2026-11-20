@@ -1,0 +1,11 @@
+{
+  "experiment": "e3_shrunk",
+  "method": "leaf_full",
+  "split": "chemotype_cold",
+  "seed": 7,
+  "final_hypervolume": 142.72921747793464,
+  "total_queries_issued": 80,
+  "n_rounds": 10,
+  "proposer_reject_rate": null,
+  "hypothesis_precision": NaN
+}

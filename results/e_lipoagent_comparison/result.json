@@ -1,0 +1,9 @@
+{
+  "model": "qwen3:8b",
+  "n_scored": 50,
+  "n_requested": 50,
+  "reject_count": 0,
+  "spearman_vs_real_potency": 0.013870279238939597,
+  "p_value": 0.923837029072616,
+  "comparison_O_GT_random_split_spearman": 0.6834639696547492
+}

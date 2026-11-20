@@ -1,0 +1,6 @@
+# E1 -- Oracle validation (RQ5, RQ6). Research plan §7.
+experiment: e1_oracle_validation
+splits: [random, scaffold_cold, chemotype_cold]
+seeds: [0, 1, 2]
+min_spearman_go_no_go: 0.3   # §5.11 -- fixed BEFORE E1 runs
+heads: [potency, potency_raw]   # real expt_Hela / expt_Raw -- no toxicity assay exists in AGILE (see data/raw/README.md)

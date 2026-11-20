@@ -1,0 +1,5 @@
+round,A,B,C,is_duplicate_of_archive,n_unseen_fragment_values,thinking_length,thinking_mentions_potency
+0,CN(C)CCN,O=C(CCCCCCCC)OCCCCCC=O,CCCCCCCCCCCC[N+]#[C-],False,0,4829,False
+0,NCCCN1CCOCC1,O=C(CCCCCCCCC)OCCCCCC=O,CCCCCCCCCCCC[N+]#[C-],False,0,4812,False
+1,NCCCN1CCOCC1,O=C(/C=C\CCCCCCC)OCCCCCC=O,CCCCCCCCCCCC[N+]#[C-],False,0,1672,False
+1,NCCCN1CCOCC1,O=C(CCCCCCCCC)OCCCCCC=O,CCCCCCCCCCCCCCCC[N+]#[C-],False,0,4449,False

@@ -1,0 +1,22 @@
+# E2 -- Gemini Flash-Lite, reduced-scope pilot (4 seeds, one split).
+# The flagship gemini-flash-latest model was confirmed (from the actual
+# 429 response body) to cap free-tier usage at 20 requests/DAY --
+# infeasible for any real sweep. gemini-flash-lite-latest is a separate,
+# higher-headroom quota bucket, but its exact daily cap was not
+# confirmed before running, so this pilot (4 seeds x 1 split x 80 calls
+# = 320 calls) is deliberately conservative and reported as exploratory.
+experiment: e2_llm_gemini_pilot
+methods: [leaf_llm_gemini, static_ga, random_search]
+splits: [random]
+seeds: [0, 1, 2, 3]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+log_diagnostics: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

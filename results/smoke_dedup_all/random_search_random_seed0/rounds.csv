@@ -1,0 +1,4 @@
+round,queries_this_round,budget_remaining,archive_hypervolume,empirical_coverage,target_coverage,inter_agent_agreement,frac_crossover,frac_duplicate_of_archive,mean_min_edit_distance,frac_selected_duplicate_of_archive
+0,2,4,83.68635218568367,1.0,0.9,1.0,0.0,0.0,3.0,0.0
+1,2,2,89.44219130804535,1.0,0.9,1.0,0.0,0.0,3.0,0.0
+2,2,0,90.66112319882185,1.0,0.9,1.0,0.0,0.0,2.5,0.0

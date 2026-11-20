@@ -1,0 +1,12 @@
+# E5 -- Hypothesis rediscovery, secondary/leakage-probed (RQ4). Research plan §5.5, §7.
+experiment: e5_hypothesis_rediscovery
+# Rescoped to structure-PROPERTY (potency), not structure-tropism -- the
+# actual LUMI-lab finding is a potency association from brominated tails,
+# not an organ-tropism rule (§5.5).
+target_property: potency
+target_fragment_slot: halogenation
+target_fragment_value: Br
+literature_corpus_snapshot: data/processed/literature_corpus_frozen_2026-08-04/
+leakage_probe_required: true          # MUST run agents/leakage_probe.py before this experiment counts
+status_if_leaked: consistency_check   # not "external_validation" -- disclosed regardless of outcome
+significance_alpha: 0.05

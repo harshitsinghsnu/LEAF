@@ -1,0 +1,10 @@
+{
+  "experiment": "e2_llm_full",
+  "method": "leaf_llm",
+  "split": "chemotype_cold",
+  "seed": 5,
+  "final_hypervolume": 49.51467857934802,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "hypothesis_precision": NaN
+}

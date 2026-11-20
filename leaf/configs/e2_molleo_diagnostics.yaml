@@ -1,0 +1,28 @@
+# E2 -- MolLEO follow-ups: diagnostics (duplicate rate, edit distance),
+# scored-prompt variant, and LLM-mutation extension. Same budget/pool/q/
+# splits/seeds as e2_llm_full.yaml / e2_llm_no_acquisition.yaml so all
+# three (leaf_llm, molleo, molleo_v3scored, molleo_llm_mutation) are
+# directly comparable via plot_agentic_value_add and the rounds.csv
+# diagnostic columns (frac_duplicate_of_archive, mean_min_edit_distance,
+# frac_selected_duplicate_of_archive -- see orchestrator/loop.py
+# RoundLog/_pool_diagnostics).
+#
+# leaf_llm is re-run here (not reused from results/e2_llm_full/) because
+# its prior run did not have log_diagnostics=True, so its rounds.csv has
+# no duplicate-rate/edit-distance columns -- the comparison needs both
+# methods logged under the identical flag.
+experiment: e2_molleo_diagnostics
+methods: [leaf_llm, molleo, molleo_v3scored, molleo_llm_mutation]
+splits: [random, scaffold_cold, chemotype_cold]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+log_diagnostics: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

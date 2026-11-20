@@ -1,0 +1,21 @@
+# E6 -- real prompt sensitivity: the v2_diversity prompt variant (see
+# leaf/agents/proposer.py LLMProposer._build_prompt) explicitly names the
+# duplicate-heavy failure mode diagnosed in §6.2 and lists already-
+# evaluated triples to avoid. Tests whether prompting alone fixes the
+# underperformance (research plan §7 item 9). Reduced scope (4 seeds, one
+# split), same disclosure standard as the original n=4 pilots.
+experiment: e6_llm_v2diversity
+methods: [leaf_llm_v2diversity, static_ga, random_search]
+splits: [random]
+seeds: [0, 1, 2, 3]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+log_diagnostics: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

@@ -1,0 +1,134 @@
+\section{Complete numerical tables}
+\label{app:tables}
+These eight tables retain every numerical entry in the original manuscript's tables. Negative paired hypervolume differences favor the baseline. All tests are two-sided and unadjusted; eight seeds allow significance but do not guarantee statistical power. ``GA'' denotes static-GA and ``RS'' denotes random search.
+
+\begin{table}[htbp]
+\caption{Llama 3.1 8B: paired hypervolume differences and Wilcoxon tests ($n=8$).}
+\label{tab:original-1}
+\centering
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Comparison & Random & Scaffold-cold & Chemotype-cold \\
+\midrule
+LLM vs.\ GA & $p=0.055$ & $p=0.078$ & $p=0.039$ \\
+Median & $-47.1$ & $-24.8$ & $-31.2$ \\
+LLM vs.\ RS & $p=0.0078$ & $p=0.039$ & $p=0.016$ \\
+Median & $-42.0$ & $-28.8$ & $-46.3$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Qwen2.5 7B: paired hypervolume differences and Wilcoxon tests ($n=8$).}
+\label{tab:original-2}
+\centering
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Comparison & Random & Scaffold-cold & Chemotype-cold \\
+\midrule
+Qwen vs.\ GA & $p=0.078$ & $p=0.109$ & $p=0.016$ \\
+Median & $-40.9$ & $-21.6$ & $-29.2$ \\
+Qwen vs.\ RS & $p=0.016$ & $p=0.195$ & $p=0.023$ \\
+Median & $-29.1$ & $-34.3$ & $-43.4$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Qwen2.5 14B: paired hypervolume differences and Wilcoxon tests ($n=8$).}
+\label{tab:original-3}
+\centering
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Comparison & Random & Scaffold-cold & Chemotype-cold \\
+\midrule
+Qwen vs.\ GA & $p=0.742$ & $p=0.313$ & $p=0.0078$ \\
+Median & $+1.8$ & $+18.3$ & $-55.1$ \\
+Qwen vs.\ RS & $p=0.742$ & $p=0.250$ & $p=0.0078$ \\
+Median & $-4.3$ & $+33.9$ & $-77.0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Initial proposal diagnostics (four seeds, one split). These are pool-proposal statistics, not directly measured fractions of selected oracle queries.}
+\label{tab:original-4}
+\centering
+\begin{tabularx}{\linewidth}{@{}Xccc@{}}
+\toprule
+Method & Crossover label & Archive duplicate & Edit distance \\
+\midrule
+Llama 3.1 8B & 99.7\% & 67.8\% & 0.587 \\
+Qwen2.5 7B & 56.2\% & 62.5\% & 0.650 \\
+Static-GA & 0\%$^\dagger$ & 22.5\% & 1.516 \\
+Random search & 0\%$^\dagger$ & 0\% & 2.812 \\
+\bottomrule
+\end{tabularx}
+\par\footnotesize $^\dagger$The non-LLM methods use different internal operator labels (e.g., \texttt{ga\_crossover\_mutation}); zero does not mean zero recombination.
+\end{table}
+
+\begin{table}[htbp]
+\caption{Matched de-duplication check: Llama 3.1 8B, random split, $B=15$, $n=4$. All 95\% CIs cross zero.}
+\label{tab:original-5}
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Comparison & No de-duplication & With de-duplication \\
+\midrule
+LLM vs.\ static-GA & Median $-17.6$ & Median $-4.7$ \\
+LLM vs.\ random search & Median $-15.1$ & Median $+2.3$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Measured candidate latency and 80-call workload cost. Times reproduce the original table; hosted retries, quota delays, and multi-day accumulation are additional.}
+\label{tab:original-6}
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}X p{0.17\linewidth} p{0.22\linewidth} p{0.17\linewidth}@{}}
+\toprule
+Method & Backend & Seconds per candidate & 80-call workload \\
+\midrule
+Llama 3.1 8B & Local GPU, Ollama & $\approx4.0$ & $\approx5.3$ min \\
+Qwen2.5 7B & Local GPU, Ollama & $\approx10.3$ & $\approx13.7$ min \\
+Qwen2.5 14B & Local GPU, Ollama & $\approx10.3$ & $\approx13.7$ min \\
+Gemini Flash-Lite & Hosted, free tier & $\approx5.1$ & $\approx6.8$ min \\
+Llama 3.3 70B & Hosted, free tier & $\approx0.6$ raw; $\approx7$ paced$^\dagger$ & $\approx9.3$ min$^\dagger$ \\
+Static-GA / random search & None (GP only) & $<0.01$ & $<1$ s \\
+\bottomrule
+\end{tabularx}
+\par\footnotesize $^\dagger$Pacing addresses per-minute throughput; a separate 100,000-token daily allowance limits total runs. Pacing alone does not reduce the tokens needed per run. The non-LLM row denotes the matched search workload, not 80 LLM calls.
+\end{table}
+
+\begin{table}[htbp]
+\caption{Thompson-sampling bandit: paired hypervolume differences and Wilcoxon tests ($n=8$).}
+\label{tab:original-7}
+\centering
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Comparison & Random & Scaffold-cold & Chemotype-cold \\
+\midrule
+Bandit vs.\ GA & $p=0.742$ & $p=0.945$ & $p=0.028$ \\
+Median & $-16.2$ & $+5.9$ & $-18.0$ \\
+Bandit vs.\ RS & $p=0.844$ & $p=1.000$ & $p=0.039$ \\
+Median & $+0.9$ & $+3.4$ & $-35.2$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Gemini Flash-Lite: paired hypervolume differences and Wilcoxon tests ($n=8$).}
+\label{tab:original-8}
+\centering
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Comparison & Random & Scaffold-cold & Chemotype-cold \\
+\midrule
+Gemini vs.\ GA & $p=0.0078$ & $p=0.0078$ & $p=0.0078$ \\
+Median & $-91.8$ & $-66.6$ & $-24.8$ \\
+Gemini vs.\ RS & $p=0.0078$ & $p=0.0078$ & $p=0.0078$ \\
+Median & $-85.5$ & $-71.1$ & $-60.2$ \\
+\bottomrule
+\end{tabular}
+\end{table}

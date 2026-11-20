@@ -1,0 +1,17 @@
+{
+  "model": "llama3.1:8b",
+  "n_scored": 50,
+  "n_requested": 50,
+  "reject_count": 0,
+  "degenerate_constant_output": false,
+  "unique_scores_emitted": [
+    6.0,
+    7.0,
+    8.0
+  ],
+  "spearman_vs_real_potency": -0.0064625720146588,
+  "p_value": 0.9644724511599682,
+  "comparison_O_GT_random_split_spearman": 0.6834639696547492,
+  "comparison_qwen3_8b_zeroshot_spearman": 0.014,
+  "temperature": 0.7
+}

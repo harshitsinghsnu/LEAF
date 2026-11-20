@@ -1,0 +1,23 @@
+# Extension of the de-duplication check to scaffold-cold and
+# chemotype-cold (external review item #6 asked for all three splits).
+# Scoped to n=4 rather than n=8 -- the random-split n=8 dedup treatment
+# arm measured ~10 hours of real wall-clock time for 8 seeds (two of
+# which also hit the excessive-empty-rounds safety valve before
+# spending the full budget), so an n=8 x 2-split extension would be a
+# real multi-day commitment. n=4 here is explicitly exploratory, at the
+# same disclosure standard as this paper's other n=4 checks.
+experiment: e2_dedup_check_other_splits
+methods: [leaf_llm, static_ga, random_search]
+splits: [scaffold_cold, chemotype_cold]
+seeds: [0, 1, 2, 3]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: false
+log_diagnostics: true
+dedupe_pool: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

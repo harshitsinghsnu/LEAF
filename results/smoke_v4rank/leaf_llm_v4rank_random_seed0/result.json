@@ -1,0 +1,14 @@
+{
+  "experiment": "smoke_v4rank",
+  "method": "leaf_llm_v4rank",
+  "split": "random",
+  "seed": 0,
+  "final_hypervolume": 100.7790494954923,
+  "total_queries_issued": 6,
+  "n_rounds": 3,
+  "proposer_reject_rate": 0.0,
+  "hypothesis_precision": NaN,
+  "frac_selected_duplicate_of_archive_overall": 0.3333333333333333,
+  "mean_n_unseen_fragment_values": 1.0,
+  "frac_queries_fully_out_of_domain": 0.0
+}

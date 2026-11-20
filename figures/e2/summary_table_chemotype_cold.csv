@@ -1,0 +1,4 @@
+method,split,n_seeds,hv_mean,hv_std,hypothesis_precision_mean
+leaf,chemotype_cold,8,166.42352391490726,26.40477635843224,0.0
+static_ga,chemotype_cold,8,166.92693740420904,22.89733592534386,
+random_search,chemotype_cold,8,171.72452992712553,18.26842561187059,

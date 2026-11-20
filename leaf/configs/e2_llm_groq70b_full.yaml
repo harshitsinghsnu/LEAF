@@ -1,0 +1,21 @@
+# E2 -- full Llama 3.3 70B run via Groq's free hosted API, addressing §7
+# item 5 (previously blocked by no API credentials/insufficient local
+# VRAM). Requires GROQ_API_KEY in the environment (leaf/.env).
+# Groq free tier: 12K tokens/min on this model -- LLMProposer backs off
+# on 429 using the server's Retry-After header, so this will pace itself
+# automatically; expect several hours due to throttling, not compute.
+experiment: e2_llm_groq70b_full
+methods: [leaf_llm_groq70b, static_ga, random_search]
+splits: [random, scaffold_cold, chemotype_cold]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+log_diagnostics: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

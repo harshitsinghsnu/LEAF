@@ -1,0 +1,22 @@
+# E2 -- LLM proposer pilot (reduced scope). Research plan §7, §3.2.
+#
+# NOT the paper-quality E2 config (that's e2_agentic_value_add.yaml, which
+# requires >=8 seeds x 3 splits, §5.2). This is a small, fast, HONEST first
+# check with a real local LLM (Ollama llama3.1:8b, ~4s/candidate) before
+# committing to the full run, which at pool_size=40 x 10 rounds x 8 seeds
+# x 3 splits would take 10+ hours. Numbers from this config are reported
+# as preliminary/reduced-seed-count, never as the paper's primary claim.
+experiment: e2_llm_pilot
+methods: [leaf_llm, static_ga, random_search]
+splits: [random]
+seeds: [0, 1, 2, 3]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

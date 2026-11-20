@@ -1,0 +1,10 @@
+{
+  "experiment": "e2_diagnostics",
+  "method": "leaf_llm_no_acquisition",
+  "split": "random",
+  "seed": 1,
+  "final_hypervolume": 119.76001064101362,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "hypothesis_precision": NaN
+}

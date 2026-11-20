@@ -1,0 +1,262 @@
+{
+  "model": "llama3.1:8b",
+  "n_calls": 40,
+  "n_resolved": 13,
+  "real_best_fragment": "Fragment(A='CCN(CC)CCCN', B='CCCCCCCC/C=C\\\\CCCCCCCC(OCCCCCC=O)=O', C='CCCCCCCCCCCC[N+]#[C-]')",
+  "fake_best_fragment_actually_real_worst": "Fragment(A='NCCN1CCNCC1', B='O=C(/C=C/CCCCCCC)OCCCCCC=O', C='CCCCCCCCCCCCCCCCCC[N+]#[C-]')",
+  "nearest_counts": {
+    "fake_best(real_worst)": 6,
+    "real_best": 0,
+    "other": 7,
+    "tie_or_none": 27
+  },
+  "frac_follows_fake_label": 0.46153846153846156,
+  "frac_follows_real_quality": 0.0,
+  "base_rate_if_uniform": 0.125,
+  "raw_results": [
+    null,
+    null,
+    {
+      "A": "NCCCN1CCCC1",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(CCCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "CCCCC/C=C\\C/C=C\\CCCCCCCC(OCCCCCC=O)=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 1,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCN1CCNCC1",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 5,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCCN1CCCC1",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 3,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCCN(CCCN)C",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCN1CCNCC1",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 5,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(CCCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 1
+    },
+    {
+      "A": "NN1CCOCC1",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCN1CCNCC1",
+      "B": "O=C(CCCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCN1CCNCC1",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 5,
+      "min_dist": 0
+    },
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(CCCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCCN(CCCN)C",
+      "B": "O=C(CCCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 1,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCCN(CCCN)C",
+      "B": "O=C(/C=C\\CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 1,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCN1CCNCC1",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 5,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    null,
+    null,
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(CCCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCCN(CCCN)C",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(/C=C\\CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(CCCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCN1CCNCC1",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 5,
+      "min_dist": 0
+    },
+    {
+      "A": "NCCN1CCCC1",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCCN(CCCN)C",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 1,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCCN1CCCC1",
+      "B": "O=C(CCCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCN1CCNCC1",
+      "B": "O=C(/C=C/CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 5,
+      "min_dist": 0
+    },
+    null,
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(CCCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCCN(CCCN)C",
+      "B": "O=C(CCCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 1,
+      "min_dist": 1
+    },
+    null,
+    {
+      "A": "NCCN(CCN)CCN",
+      "B": "O=C(/C=C\\CCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 2
+    },
+    {
+      "A": "NCCCN(CCCN)C",
+      "B": "CCCCCCCC/C=C\\CCCCCCCC(OCCCCCC=O)=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": null,
+      "min_dist": 1
+    },
+    {
+      "A": "NCCCN(CCCN)C",
+      "B": "O=C(CCCCCCCC)OCCCCCC=O",
+      "C": "CCCCCCCCCCCC[N+]#[C-]",
+      "nearest_idx": 1,
+      "min_dist": 1
+    }
+  ]
+}

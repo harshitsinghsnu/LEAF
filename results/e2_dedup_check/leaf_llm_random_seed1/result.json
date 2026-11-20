@@ -1,0 +1,11 @@
+{
+  "experiment": "e2_dedup_check",
+  "method": "leaf_llm",
+  "split": "random",
+  "seed": 1,
+  "final_hypervolume": 97.46549507616112,
+  "total_queries_issued": 15,
+  "n_rounds": 7,
+  "proposer_reject_rate": 0.0,
+  "hypothesis_precision": NaN
+}

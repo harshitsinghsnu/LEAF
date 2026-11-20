@@ -1,0 +1,16 @@
+# E4 re-verified under the same shrunk-budget/extended-vocabulary
+# condition E2's reportable result uses -- same rationale as
+# e3_hypothesis_feedback_ablation_shrunk.yaml.
+experiment: e4_verifier_calibration_ablation_shrunk
+methods: [leaf_full, leaf_ablation_e]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 80
+pool_size: 40
+q: 8
+acquisition_function: multi_objective_ucb
+reference_point: [-5.0, -5.0]
+target_coverage: 0.9
+recalibrate_every_round: true
+conformal_method: weighted_mondrian
+n_debate_agents: 3
+base_models: [modelA, modelB]

@@ -1,0 +1,11 @@
+{
+  "experiment": "e6_llm_temp10",
+  "method": "leaf_llm",
+  "split": "random",
+  "seed": 3,
+  "final_hypervolume": 129.50190902591635,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "proposer_reject_rate": 0.0,
+  "hypothesis_precision": NaN
+}

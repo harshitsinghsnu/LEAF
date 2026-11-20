@@ -1,0 +1,26 @@
+# E2 -- proposer-only vs. full-loop ablation (RQ1 follow-up, cf. MolLEO
+# arXiv:2406.16976's direct-query-vs-evolutionary-loop ablation: 0.164 vs.
+# 0.926 top-10 AUC on JNK3). Isolates whether leaf_llm's §6.2
+# underperformance comes from the LLM proposing bad candidates, or from
+# good candidates it does propose being discarded by acquisition.
+# "leaf_llm_no_acquisition" (use_acquisition=False, LoopConfig) queries the
+# first q pool survivors directly with no UCB scoring; compare its final
+# hypervolume against leaf_llm (full loop, same seeds/splits/budget) from
+# results/e2_llm_full/.
+#
+# IDENTICAL budget/pool_size/q/splits/seeds to e2_llm_full.yaml so the two
+# are directly comparable without re-running the leaf_llm arm.
+experiment: e2_llm_no_acquisition
+methods: [leaf_llm_no_acquisition]
+splits: [random, scaffold_cold, chemotype_cold]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

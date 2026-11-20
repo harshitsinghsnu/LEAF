@@ -1,0 +1,18 @@
+# DeepSeek-R1 8B reasoning-mode Proposer + real objective-scored prompt,
+# mirroring e2_qwen3_reasoning_scored_check for the second reasoning
+# model. Exploratory scale (n=4, random split).
+experiment: e2_deepseekr1_reasoning_scored_check
+methods: [leaf_llm_deepseekr1_reasoning_scored, static_ga, random_search]
+splits: [random]
+seeds: [0, 1, 2, 3]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: false
+log_diagnostics: true
+dedupe_pool: false
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

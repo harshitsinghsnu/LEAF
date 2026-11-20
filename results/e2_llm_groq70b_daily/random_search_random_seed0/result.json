@@ -1,0 +1,11 @@
+{
+  "experiment": "e2_llm_groq70b_daily",
+  "method": "random_search",
+  "split": "random",
+  "seed": 0,
+  "final_hypervolume": 139.08483847595562,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "proposer_reject_rate": null,
+  "hypothesis_precision": NaN
+}

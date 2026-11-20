@@ -1,0 +1,14 @@
+{
+  "experiment": "e2_llm_v6shuffled_check",
+  "method": "leaf_llm_v6shuffled",
+  "split": "random",
+  "seed": 1,
+  "final_hypervolume": 232.262563068695,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "proposer_reject_rate": 0.0625,
+  "hypothesis_precision": NaN,
+  "frac_selected_duplicate_of_archive_overall": 0.225,
+  "mean_n_unseen_fragment_values": 1.625,
+  "frac_queries_fully_out_of_domain": 0.025
+}

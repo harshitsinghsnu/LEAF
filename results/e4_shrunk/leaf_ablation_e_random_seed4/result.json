@@ -1,0 +1,11 @@
+{
+  "experiment": "e4_shrunk",
+  "method": "leaf_ablation_e",
+  "split": "random",
+  "seed": 4,
+  "final_hypervolume": 198.17067263726787,
+  "total_queries_issued": 80,
+  "n_rounds": 10,
+  "proposer_reject_rate": null,
+  "hypothesis_precision": NaN
+}

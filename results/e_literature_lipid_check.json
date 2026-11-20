@@ -1,0 +1,20 @@
+{
+  "MC3 (DLin-MC3-DMA)": {
+    "input_smiles": "CCCCC/C=C\\C/C=C\\CCCCCCCCC(CCCCCCCC/C=C\\C/C=C\\CCCCC)OC(=O)CCCN(C)C",
+    "rdkit_parses": true,
+    "decomposes_as_ugi3cr": false,
+    "recovered_fragment": null
+  },
+  "SM-102": {
+    "input_smiles": "CCCCCCCCCCCOC(=O)CCCCCN(CCCCCCCC(=O)OC(CCCCCCCC)CCCCCCCC)CCO",
+    "rdkit_parses": true,
+    "decomposes_as_ugi3cr": false,
+    "recovered_fragment": null
+  },
+  "ALC-0315": {
+    "input_smiles": "CCCCCCCCC(CCCCCC)C(=O)OCCCCCCN(CCCCCCOC(=O)C(CCCCCC)CCCCCCCC)CCCCO",
+    "rdkit_parses": true,
+    "decomposes_as_ugi3cr": false,
+    "recovered_fragment": null
+  }
+}

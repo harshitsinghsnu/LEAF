@@ -1,0 +1,22 @@
+# Rank-only (ordinal) context check (external review follow-up to
+# v3_scored): identical protocol, but the LLM Proposer sees only each
+# sampled archive member's relative rank (1=best), never raw potency
+# values. Isolates whether relative preference alone drives any effect,
+# separate from magnitude-anchoring/interpolation. Exploratory scale
+# (n=4, random split), matching v3_scored's protocol exactly for a
+# direct, apples-to-apples comparison.
+experiment: e2_llm_v4rank_check
+methods: [leaf_llm_v4rank, static_ga, random_search]
+splits: [random]
+seeds: [0, 1, 2, 3]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: false
+log_diagnostics: true
+dedupe_pool: false
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

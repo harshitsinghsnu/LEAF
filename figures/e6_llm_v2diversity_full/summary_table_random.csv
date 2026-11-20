@@ -1,0 +1,4 @@
+method,split,n_seeds,hv_mean,hv_std,hypothesis_precision_mean
+leaf_llm_v2diversity,random,8,123.91370803262774,10.2078511698171,
+static_ga,random,8,157.33404002016871,39.25566425548149,
+random_search,random,8,151.10725653965923,16.864346107131443,

@@ -1,0 +1,10 @@
+{
+  "experiment": "e2_diagnostics",
+  "method": "static_ga",
+  "split": "random",
+  "seed": 2,
+  "final_hypervolume": 135.46300975075783,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "hypothesis_precision": NaN
+}

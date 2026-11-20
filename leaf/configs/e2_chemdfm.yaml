@@ -1,0 +1,22 @@
+# E2 -- chemistry-specialized LLM baseline: ChemDFM-v2.0-14B and its
+# reasoning variant ChemDFM-R-14B (OpenDFM, arXiv:2401.14818), vs. the
+# general-purpose llama3.1:8b leaf_llm and the MolLEO-style baselines.
+# Same experiment dir as e2_molleo_diagnostics.yaml (identical budget/
+# pool/q/splits/seeds/log_diagnostics) so leaf_llm and molleo results
+# already logged there are reused directly for comparison instead of
+# re-run.
+experiment: e2_molleo_diagnostics
+methods: [leaf_chemdfm_v2, leaf_chemdfm_r]
+splits: [random, scaffold_cold, chemotype_cold]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+log_diagnostics: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

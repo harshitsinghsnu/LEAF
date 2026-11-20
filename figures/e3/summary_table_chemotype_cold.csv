@@ -1,0 +1,3 @@
+method,split,n_seeds,hv_mean,hv_std,hypothesis_precision_mean
+leaf_full,chemotype_cold,8,208.99607041442792,35.14801564042398,0.0
+leaf_ablation_d,chemotype_cold,8,208.99607041442792,35.14801564042398,0.0

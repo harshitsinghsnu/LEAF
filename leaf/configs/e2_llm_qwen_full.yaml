@@ -1,0 +1,20 @@
+# E2 -- full Qwen2.5 7B run, matching e2_llm_full.yaml's scope (8 seeds x
+# 3 splits) so the paper has two properly-powered real-LLM results, not
+# one full (Llama 3.1 8B) + one exploratory (Qwen2.5 7B, n=4).
+# Qwen2.5 is ~2.5x slower per candidate than Llama (~10.3s vs ~4s), so
+# this will take roughly 2.5x as long as the e2_llm_full run (~5 hours).
+experiment: e2_llm_qwen_full
+methods: [leaf_llm_qwen, static_ga, random_search]
+splits: [random, scaffold_cold, chemotype_cold]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+log_diagnostics: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

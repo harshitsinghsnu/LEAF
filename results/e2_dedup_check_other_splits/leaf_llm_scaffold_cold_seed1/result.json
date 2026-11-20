@@ -1,0 +1,14 @@
+{
+  "experiment": "e2_dedup_check_other_splits",
+  "method": "leaf_llm",
+  "split": "scaffold_cold",
+  "seed": 1,
+  "final_hypervolume": 96.17548127423002,
+  "total_queries_issued": 35,
+  "n_rounds": 81,
+  "proposer_reject_rate": 0.0,
+  "hypothesis_precision": NaN,
+  "frac_selected_duplicate_of_archive_overall": 0.0,
+  "mean_n_unseen_fragment_values": 0.2,
+  "frac_queries_fully_out_of_domain": 0.0
+}

@@ -1,0 +1,23 @@
+# E2 -- full Qwen2.5 14B run: a genuinely larger local model (14B vs. the
+# 7-8B models already tested), made possible by an NVIDIA RTX A4000 (16GB
+# VRAM) available in this environment. Not a 40B+/hosted-model test (still
+# blocked by VRAM/API access -- see paper §7 item 5), but a real, non-
+# trivial step up in scale, run at the same statistical power as the two
+# smaller models so all three are directly comparable.
+# Measured latency: ~10.3s/candidate (same order as Qwen2.5 7B; GPU-bound,
+# not parameter-count-bound at this scale) -- expect ~5 hours total.
+experiment: e2_llm_qwen14b_full
+methods: [leaf_llm_qwen14b, static_ga, random_search]
+splits: [random, scaffold_cold, chemotype_cold]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 4
+log_diagnostics: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

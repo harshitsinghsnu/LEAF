@@ -1,0 +1,11 @@
+{
+  "experiment": "e6_llm_v2diversity_full",
+  "method": "leaf_llm_v2diversity",
+  "split": "random",
+  "seed": 4,
+  "final_hypervolume": 128.3968678139878,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "proposer_reject_rate": 0.05,
+  "hypothesis_precision": NaN
+}

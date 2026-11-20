@@ -1,0 +1,11 @@
+{
+  "experiment": "e2_dedup_check_full8_control",
+  "method": "random_search",
+  "split": "random",
+  "seed": 1,
+  "final_hypervolume": 155.06026141173254,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "proposer_reject_rate": null,
+  "hypothesis_precision": NaN
+}

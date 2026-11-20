@@ -1,0 +1,5 @@
+{
+  "vocabulary_size": 30044,
+  "n_real_labeled": 1200,
+  "budget_vs_space_note": "vocabulary_size == n_real_labeled: no genuinely unlabeled search space with this single data source (RQ6)"
+}

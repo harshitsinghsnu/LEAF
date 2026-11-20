@@ -1,0 +1,4 @@
+method,split,n_seeds,hv_mean,hv_std,hypothesis_precision_mean
+leaf,random,8,209.72235448162314,45.07977133301392,0.0
+static_ga,random,8,211.66216338445992,34.58302171491972,
+random_search,random,8,202.92063940314898,18.46061946662881,

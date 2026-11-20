@@ -1,0 +1,6 @@
+method,split,n_seeds,hv_mean,hv_std,hypothesis_precision_mean
+leaf_llm,random,4,111.73592577716852,5.675659150758098,
+leaf_llm_no_acquisition,random,4,114.00166063723829,7.730252501201414,
+leaf_llm_qwen,random,4,126.54072215981384,18.733266736384927,
+static_ga,random,4,133.46492716171943,30.35869259974748,
+random_search,random,4,155.85624749742533,10.540481188558257,

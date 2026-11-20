@@ -1,0 +1,11 @@
+{
+  "experiment": "e3_shrunk",
+  "method": "leaf_ablation_d",
+  "split": "chemotype_cold",
+  "seed": 5,
+  "final_hypervolume": 173.2655537617385,
+  "total_queries_issued": 80,
+  "n_rounds": 10,
+  "proposer_reject_rate": null,
+  "hypothesis_precision": NaN
+}

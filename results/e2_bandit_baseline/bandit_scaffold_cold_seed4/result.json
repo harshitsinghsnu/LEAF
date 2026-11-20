@@ -1,0 +1,11 @@
+{
+  "experiment": "e2_bandit_baseline",
+  "method": "bandit",
+  "split": "scaffold_cold",
+  "seed": 4,
+  "final_hypervolume": 150.15839933755595,
+  "total_queries_issued": 40,
+  "n_rounds": 8,
+  "proposer_reject_rate": null,
+  "hypothesis_precision": NaN
+}

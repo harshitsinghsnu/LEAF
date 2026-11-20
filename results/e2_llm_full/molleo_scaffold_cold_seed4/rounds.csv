@@ -1,0 +1,9 @@
+round,queries_this_round,budget_remaining,archive_hypervolume,empirical_coverage,target_coverage,inter_agent_agreement,frac_crossover,frac_duplicate_of_archive,mean_min_edit_distance,frac_selected_duplicate_of_archive
+0,5,35,106.53468502170189,1.0,0.9,1.0,,,,
+1,5,30,199.77077301592857,1.0,0.9,1.0,,,,
+2,5,25,199.77077301592857,1.0,0.9,1.0,,,,
+3,5,20,219.9970552204847,1.0,0.9,1.0,,,,
+4,5,15,219.99705539634553,1.0,0.9,1.0,,,,
+5,5,10,219.99705539634553,1.0,0.9,1.0,,,,
+6,5,5,219.99705539634553,1.0,0.9,1.0,,,,
+7,5,0,221.69418308158322,1.0,0.9,1.0,,,,

@@ -1,0 +1,20 @@
+# Full-power follow-up to e2_dedup_check.yaml (external review: run the
+# de-duplication check at n=8 instead of n=4). Budget kept at 40 (matches
+# the paper's primary E2 protocol) rather than the reduced B=15 pilot,
+# random split only -- scaffold-cold/chemotype-cold deferred (real
+# wall-clock cost: dedup forces 2.3-7x more real LLM calls per seed).
+experiment: e2_dedup_check_full8
+methods: [leaf_llm, static_ga, random_search]
+splits: [random]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]
+budget: 40
+pool_size: 10
+q: 5
+acquisition_function: multi_objective_ucb
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: false
+log_diagnostics: true
+dedupe_pool: true
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median

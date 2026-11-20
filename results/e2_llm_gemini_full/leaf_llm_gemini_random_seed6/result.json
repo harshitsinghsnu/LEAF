@@ -1,0 +1,11 @@
+{
+  "experiment": "e2_llm_gemini_full",
+  "method": "leaf_llm_gemini",
+  "split": "random",
+  "seed": 6,
+  "final_hypervolume": 103.86298996777595,
+  "total_queries_issued": 40,
+  "n_rounds": 6,
+  "proposer_reject_rate": 0.0,
+  "hypothesis_precision": 0.0
+}

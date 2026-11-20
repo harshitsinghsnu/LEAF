@@ -1,0 +1,10 @@
+{
+  "experiment": "e3",
+  "method": "leaf_ablation_d",
+  "split": "chemotype_cold",
+  "seed": 3,
+  "final_hypervolume": 240.88866550247678,
+  "total_queries_issued": 400,
+  "n_rounds": 40,
+  "hypothesis_precision": NaN
+}

@@ -1,0 +1,24 @@
+# E2 -- Agentic value-add (RQ1, primary claim). Research plan §7.
+experiment: e2_agentic_value_add
+methods: [leaf, static_ga, random_search]
+splits: [random, scaffold_cold, chemotype_cold]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7]   # >=8, §5.2 -- Wilcoxon underpowered below this
+# budget was 400 (=1/3 of |X|=1200, the real AGILE vocabulary size --
+# see leaf/data/raw/README.md and the RQ6 note in run_e1_oracle_validation.py).
+# At that budget every method (leaf, static_ga, even random_search)
+# reliably found close to the same near-complete Pareto front, producing
+# a real but uninformative null result (random_search had EXACTLY zero
+# variance across all 8 seeds on chemotype_cold -- the space was
+# essentially exhausted regardless of search strategy). Shrinking the
+# budget to a genuinely small fraction of |X| restores real scarcity so
+# the comparison is actually testing something.
+budget: 80
+pool_size: 40
+q: 8
+acquisition_function: multi_objective_ucb   # IDENTICAL across leaf/static_ga/random_search, §3.2
+ucb_beta: 2.0
+use_verifier: true
+use_hypothesis: true
+hypothesis_every_k: 5
+reference_point: [-5.0, -5.0]
+primary_statistic: bootstrap_ci_median   # §5.2/§7.2
