@@ -29,6 +29,54 @@ better search outcomes. These results identify duplicate-driven query
 waste, not model scale or prompt design, as the binding constraint on
 current zero-shot language-model proposers under matched budgets.
 
+## Extensions beyond the original negative result
+
+The abstract above is the project's original finding (pure zero-shot LLM
+proposers lose to classical baselines, dominated by duplication). Since
+then the following work extends that result into a diagnosis-plus-fix
+story, inspired by MolLEO (Yoshikawa et al., arXiv:2406.16976):
+
+**Done:**
+- **Proposer-only-vs-full-loop ablation** (`leaf_llm_no_acquisition`,
+  `leaf/configs/e2_llm_no_acquisition.yaml`): isolates how much of
+  LEAF's acquisition function (vs. the proposer itself) drives
+  hypervolume. Acquisition contributes a significant gain on 2 of 3
+  splits (random, scaffold_cold).
+- **MolLEO-style baseline** (`leaf/baselines/molleo_proposer.py`,
+  method `molleo`): a faithful reimplementation of MolLEO's design
+  (LLM does crossover only, mutation stays a fixed GA operator, LLM
+  offspring filtered by Tanimoto similarity to the current best archive
+  member), run through LEAF's identical matched-budget/oracle/
+  acquisition protocol. Significantly beats `leaf_llm` on all 3 splits
+  (p ≤ 0.0078) and cuts the duplicate rate from ~75-79% to ~19-30%.
+- **Two extensions beyond the MolLEO paper**, testing whether its
+  design can be pushed further: `molleo_v3scored` (LLM crossover
+  prompt also shown real Pareto scores — no improvement over `molleo`,
+  p > 0.4 on 2/3 splits) and `molleo_llm_mutation` (LLM also drives
+  mutation, not just crossover — significantly *worse* than `molleo`
+  on all 3 splits, and partially reopens the duplication problem,
+  ~42-46% vs. `molleo`'s ~19-30%). Confirms MolLEO's crossover-only
+  constraint is load-bearing, not arbitrary.
+  Config: `leaf/configs/e2_molleo_diagnostics.yaml`.
+- **ChemDFM backend** (`LLMProposer(backend="chemdfm")`, methods
+  `leaf_chemdfm_v2` / `leaf_chemdfm_r`): a chemistry-specialized local
+  LLM (OpenDFM/ChemDFM-v2.0-14B and its reasoning variant ChemDFM-R-14B,
+  4-bit quantized) as a drop-in replacement for the general-purpose
+  `leaf_llm` backend, under the identical protocol.
+  Config: `leaf/configs/e2_chemdfm.yaml`.
+
+**In progress / not yet run:**
+- ChemDFM-v2.0-14B: `random` split complete (8/8 seeds); `scaffold_cold`
+  and `chemotype_cold` splits not yet run.
+- ChemDFM-R-14B (reasoning variant): not yet started.
+- BioT5, MolT5, MolSTM as further chemistry-specialized operators:
+  not yet started — these need new, non-Ollama HuggingFace
+  `transformers`-based inference wrappers (they are not chat-style
+  LLMs, unlike ChemDFM), to be implemented in that order.
+- Paper draft (`LEAF_draft_paper.tex`) and poster have not yet been
+  updated to reflect any of the above; the abstract in this README is
+  still the pre-MolLEO version.
+
 ## Architecture
 
 ![LEAF search loop](figures/architecture.png)
