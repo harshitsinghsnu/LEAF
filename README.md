@@ -73,9 +73,6 @@ story, inspired by MolLEO (Yoshikawa et al., arXiv:2406.16976):
   not yet started — these need new, non-Ollama HuggingFace
   `transformers`-based inference wrappers (they are not chat-style
   LLMs, unlike ChemDFM), to be implemented in that order.
-- Paper draft (`LEAF_draft_paper.tex`) and poster have not yet been
-  updated to reflect any of the above; the abstract in this README is
-  still the pre-MolLEO version.
 
 ## Architecture
 
